@@ -5,6 +5,31 @@ $brand: #58c800;
 $white: #f9f9f9;
 $text: #323232;
 
+.terms {
+    margin: 30px 0
+}
+
+.term {
+    display: inline-block;
+    margin-right: 15px;
+    color: #b5b5b5;
+    text-transform: lowercase;
+    transition: all ease-in-out 300ms;
+    cursor: pointer;
+
+    &:last-child {
+    	margin-right: 0
+    }
+
+    &:hover {
+    	color: $brand
+    }
+}
+
+.term_active {
+	color: $brand
+}
+
 /*** Media queries ***/
 @media (max-width : 800px) {
 }
