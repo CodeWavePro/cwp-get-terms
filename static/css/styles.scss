@@ -5,11 +5,28 @@ $brand: #58c800;
 $white: #f9f9f9;
 $text: #323232;
 
-.terms {
-    margin: 30px 0
+.terms-wrapper {
+    margin: 0 0 15px
 }
 
-.term {
+.sorting-wrapper {
+    margin: 0 0 30px
+}
+
+.cwpgt-icon {
+    color: $brand;
+    width: 16px;
+    text-align: center;
+    margin-right: 10px
+}
+
+.terms,
+.sorting {
+    display: inline-block
+}
+
+.term,
+.sort {
     display: inline-block;
     margin-right: 15px;
     color: #b5b5b5;
@@ -26,8 +43,240 @@ $text: #323232;
     }
 }
 
-.term_active {
+.cwpgt_active {
 	color: $brand
+}
+
+/**
+ * Single product.
+ */
+.cwpgt-product {
+    position: relative;
+    border: 1px solid #f0f0f0;
+    border-radius: 3px;
+    overflow: hidden;
+    transition: all ease-in-out 300ms;
+    background-color: #fff;
+    overflow: hidden;
+    margin: 0 0 30px;
+
+    &:hover {
+        border-color: $brand
+    }
+}
+
+/**
+ * Product image.
+ */
+.cwpgt-product-image {
+    height: 300px;
+    background-size: cover;
+    background-position: center center
+}
+
+/**
+ * Product title text.
+ */
+.cwpgt-product-text__header {
+    font-size: 16px;
+    margin: 0;
+    text-transform: none
+}
+
+/**
+ * Product term.
+ */
+.cwpgt-product-term {
+    padding: 10px 15px 0
+}
+
+/**
+ * Product term link.
+ */
+.cwpgt-product-term__link {
+    font-size: 16px;
+    color: #b5b5b5
+}
+
+/**
+ * Product name and price wrapper.
+ */
+.cwpgt-product-info {
+    padding: 10px 15px;
+    height: 52px;
+    display: grid;
+    grid-template-columns: 3fr 2fr;
+    align-items: center;
+    overflow: hidden
+}
+
+/**
+ * Product price.
+ */
+.cwpgt-product-price__new {
+    display: block;
+    text-align: right;
+    font-size: 27px;
+    font-family: 'Fira Sans'
+}
+
+/**
+ * Price currency.
+ */
+.cwpgt-product-price__currency {
+    font-size: 18px
+}
+
+/**
+ * Overlays for animation when clicking PLUS sign.
+ */
+.button-slide-overlay-before,
+.button-slide-overlay-before_brand {
+    position: absolute;
+    top: 35px;
+    right: 35px;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background-color: $white;
+    transition: all ease-in-out 300ms
+}
+
+/**
+ * Green overlay.
+ */
+.button-slide-overlay-before_brand {
+    background-color: $brand;
+    opacity: 0.85
+}
+
+/**
+ * Overlays styles when they are visible.
+ */
+.button-slide-overlay-before_active {
+    width: 800px;
+    height: 800px;
+    margin-right: -80%;
+    margin-top: -80%
+}
+
+/**
+ * Buttons with more slide info.
+ */
+.button-slide-overlay {
+    display: none;
+    align-content: center;
+    justify-content: center;
+    opacity: 0;
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 100%;
+    height: 100%;
+    background-color: $white;
+    padding-top: 45px;
+    z-index: 1;
+    transition: all ease-in-out 300ms;
+
+    .button {
+        background-color: transparent;
+        color: $brand;
+        opacity: 0;
+        margin-bottom: 15px;
+
+        &:last-child {
+            margin: 30px 0 0
+        }
+
+        &:hover {
+            border-radius: 30px;
+            background-color: $brand;
+            color: $white !important
+        }
+
+        &:visited,
+        &:active,
+        &:focus {
+            color: $brand
+        }
+    }
+}
+
+/**
+ * Wrapper for PLUS sign on product image.
+ */
+.product-actions,
+.close-popup {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    width: 50px;
+    height: 50px;
+    background-color: rgba(255, 255, 255, 0.25);
+    border-radius: 50%;
+    display: grid;
+    align-content: center;
+    justify-content: center;
+    transition: all ease-in-out 300ms;
+    z-index: 1;
+
+    &:hover {
+        background-color: $brand;
+
+        .product-actions__line,
+        .close-popup__line {
+            background-color: $white
+        }
+    }
+}
+
+.close-popup {
+    transform: rotate(45deg)
+}
+
+// Active PLUS sign to be shown as CLOSE sign.
+.product-actions_active {
+    transform: rotate(45deg)
+}
+
+/**
+ * Lines (horizontal & vertical) making PLUS sign on product image.
+ */
+.product-actions__line,
+.close-popup__line {
+    display: block;
+    width: 30px;
+    height: 2px;
+    background-color: $brand;
+    transition: all ease-in-out 300ms
+}
+
+.product-actions__line_vertical,
+.close-popup__line_vertical {
+    transform: rotate(90deg);
+    margin-top: -2px
+}
+
+/**
+ * More info about product, when PLUS icon is clicked.
+ */
+.cwpgt-more-info-wrapper {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.5);
+    z-index: 99
+}
+
+// Block for more product info.
+.cwpgt-more-info {
+    width: 50%;
+    background-color: #fff;
+    height: 100%;
+    box-shadow: 0 0 5px 5px rgba(0, 0, 0, 0.15)
 }
 
 /*** Media queries ***/
