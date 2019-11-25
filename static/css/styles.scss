@@ -126,7 +126,8 @@ $text: #323232;
     display: block;
     text-align: right;
     font-size: 27px;
-    font-family: 'Fira Sans'
+    font-family: 'Fira Sans';
+    white-space: nowrap
 }
 
 /**
@@ -570,4 +571,11 @@ $text: #323232;
 // More info buttons block single button.
 .cwpgt-more-info-buttons__button {
     margin: 10px
+}
+
+@media (max-width : 767px) {
+    .cwpgt-product {
+        width: 290px;
+        margin: 0 auto 30px
+    }
 }

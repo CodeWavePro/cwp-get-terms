@@ -88,7 +88,7 @@ $terms = get_terms(
 					while( $new_query->have_posts() ) : $new_query->the_post();
 						$id = get_the_ID();
 						?>
-						<div class = "fw-col-md-3">
+						<div class = "fw-col-md-3 fw-col-sm-4">
 							<div class = "cwpgt-product">
 								<div class = "cwpgt-product-image" style = "background-image: url(<?php echo get_the_post_thumbnail_url( $id, 'medium' ) ?>)">
 									<!-- Overlays are showing when PLUS icon is clicked. -->
