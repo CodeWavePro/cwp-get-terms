@@ -77,12 +77,13 @@ $terms = get_terms(
 							[
 								'taxonomy'	=> 'products',	// Taxonomy name.
 								'field'		=> 'slug',	// Posts will be outputing by term slug.
-								'terms'		=> $first_term_slug	// Term slug.
+								'terms'		=> 'italianskaia-furnitura'	// Term slug.
 							]
 						]
 					]
 				);
 
+				// If our new query has posts (products).
 				if ( $new_query->have_posts() ) {
 					while( $new_query->have_posts() ) : $new_query->the_post();
 						$id = get_the_ID();
@@ -91,28 +92,41 @@ $terms = get_terms(
 							<div class = "cwpgt-product">
 								<div class = "cwpgt-product-image" style = "background-image: url(<?php echo get_the_post_thumbnail_url( $id, 'medium' ) ?>)">
 									<!-- Overlays are showing when PLUS icon is clicked. -->
-									<div class = "button-slide-overlay-before_brand"></div>
-									<div class = "button-slide-overlay-before"></div>
+									<div class = "cwpgt-button-overlay-before_brand"></div>
+									<div class = "cwpgt-button-overlay-before"></div>
 
 									<!-- Buttons are showing when PLUS icon is clicked. -->
-									<div class = "button-slide-overlay animated">
-										<a class = "button cwp-slide-more-info-button animated" href = "#" data-id = "<?php esc_attr_e( $id ) ?>"><?php _e( 'Больше информации', 'mebel-laim' ) ?></a>
+									<div class = "cwpgt-button-overlay animated">
+										<a class = "button cwpgt-more-info-button animated" href = "#" data-id = "<?php esc_attr_e( $id ) ?>"><?php _e( 'Больше информации', 'mebel-laim' ) ?></a>
 										<a class = "button animated" href = "#" style = "animation-delay: 150ms"><?php _e( 'Быстрый заказ', 'mebel-laim' ) ?></a>
 										<a class = "button animated" href = "#" style = "animation-delay: 300ms"><?php _e( 'Добавить в корзину', 'mebel-laim' ) ?></a>
 										<a class = "button animated" href = "<?php the_permalink() ?>" style = "animation-delay: 450ms"><?php _e( 'Перейти к товару', 'mebel-laim' ) ?></a>
 									</div>
 
 									<!-- PLUS icon. -->
-									<a href = "#" class = "product-actions" title = "<?php _e( 'Действия', 'mebel-laim' ) ?>" data-clicked = "0">
+									<a href = "#" class = "cwpgt-product-actions" title = "<?php _e( 'Действия', 'mebel-laim' ) ?>" data-clicked = "0">
 										<!-- Horizontal line. -->
-						 				<span class = "product-actions__line"></span>
+						 				<span class = "cwpgt-product-actions__line"></span>
 						 				<!-- Vertical line. -->
-						 				<span class = "product-actions__line product-actions__line_vertical"></span>
+						 				<span class = "cwpgt-product-actions__line cwpgt-product-actions__line_cross"></span>
 						 			</a>
 								</div><!-- .cwpgt-product-image -->
 
 								<div class = "cwpgt-product-term">
-						 			<a class = "cwpgt-product-term__link" href = "<?php echo get_term_link( $term->term_id, 'products' ) ?>"><?php esc_html_e( $term->name, 'mebel-laim' ) ?></a>
+									<?php
+						 			// Getting all terms of current product in taxonomy "products".
+						 			$terms = wp_get_post_terms( $id, 'products' );
+
+						 			// Searching if one of terms has no child terms - this is the lowest term, we need it.
+						 			foreach ( $terms as $term ) {
+						 				if ( count( get_term_children( $term->term_id, 'products' ) ) === 0 ) {
+						 					?>
+						 					<a class = "cwpgt-product-term__link" href = "<?php echo get_term_link( $term->term_id, 'products' ) ?>"><?php esc_html_e( $term->name, 'mebel-laim' ) ?></a>
+						 					<?php
+						 					break;
+						 				}
+						 			}
+						 			?>
 						 		</div><!-- .cwp-slide-term -->
 
 								<div class = "cwpgt-product-info">
@@ -154,6 +168,51 @@ $terms = get_terms(
 				wp_reset_query();	// Clearing query ($new_query) for correct work of other loops.
 				?>
 			</div><!-- .term-products-wrapper.clear -->
+		</div><!-- .fw-row -->
+	</div><!-- .fw-container -->
+
+	<!-- Hidden block to show more info about product, when .cwp-slide-more-info-button is clicked. -->
+	<div class = "cwpgt-more-info-wrapper animated">
+		<!-- Close wrapper. -->
+		<a href = "#" class = "close-popup" title = "<?php _e( 'Действия', 'mebel-laim' ) ?>" data-clicked = "0">
+			<!-- Horizontal line. -->
+			<span class = "cwpgt-product-actions__line"></span>
+			<!-- Vertical line. -->
+			<span class = "cwpgt-product-actions__line cwpgt-product-actions__line_cross"></span>
+		</a>
+
+		<div class = "cwpgt-more-info animated">
+			<h2 class = "cwpgt-more-info__title cwpgt-vertical-line-for-header"></h2>
+
+			<div class = "cwpgt-more-info-prices">
+				<span class = "cwpgt-more-info-prices__old"></span>
+				<span class = "cwpgt-more-info-prices__new"></span>
+			</div>
+
+			<div class = "cwpgt-more-info-item cwpgt-more-info-colors animated"></div>
+			<div class = "cwpgt-more-info-item cwpgt-more-info-type animated"></div>
+			<div class = "cwpgt-more-info-item cwpgt-more-info-material animated"></div>
+			<div class = "cwpgt-more-info-item cwpgt-more-info-width animated"></div>
+			<div class = "cwpgt-more-info-item cwpgt-more-info-height animated"></div>
+			<div class = "cwpgt-more-info-item cwpgt-more-info-depth animated"></div>
+			<div class = "cwpgt-more-info-item cwpgt-more-info-number-per-pack animated"></div>
+			<div class = "cwpgt-more-info-item cwpgt-more-info-manufacture-country animated"></div>
+			<div class = "cwpgt-more-info-item cwpgt-more-info-brand-country animated"></div>
+			<div class = "cwpgt-more-info-item cwpgt-more-info-guarantee animated"></div>
+			<div class = "cwpgt-more-info-item cwpgt-more-info-text animated"></div>
+
+			<div class = "cwpgt-more-info-buttons">
+				<a class = "button cwpgt-more-info-buttons__button button_go-to-product" href = "#"><?php _e( 'На страницу товара', 'mebel-laim' ) ?></a>
+				<a class = "button cwpgt-more-info-buttons__button button_add-to-cart" href = "#"><?php _e( 'Добавить в корзину', 'mebel-laim' ) ?></a>
+				<a class = "button cwpgt-more-info-buttons__button button_quick-order" href = "#"><?php _e( 'Быстрый заказ', 'mebel-laim' ) ?></a>
+			</div>
+		</div><!-- .cwp-more-info -->
+
+		<div class = "cwpgt-more-info-right">
+			<!-- Product image. -->
+			<div class = "cwpgt-more-info-image-wrapper animated"></div>
+			<!-- More product images (if exist). -->
+			<div class = "cwpgt-more-info-images animated"></div>
 		</div>
-	</div>
+	</div><!-- .cwp-more-info-wrapper -->
 </section>
