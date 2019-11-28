@@ -2,17 +2,31 @@ jQuery( function( $ ) {
 	var isActiveAjax = false;
 
 	/**
+	 * Preloader appearing function.
+	 *
+	 * @param preloaderClass - class name of preloader wrapper to remove it after loading data.
+	 */
+	function appendPreloader( preloaderClass ) {
+		$( 'body' ).append(
+			'<div class = "' + preloaderClass + ' animated fadeIn">' +
+				'<i class = "fas fa-spinner cwpgt-product-more-info-preloader__icon"></i>' +
+			'</div>'
+		);
+	}
+
+	/**
 	 * When all page is loaded.
 	 */
 	$( document ).ready( function() {
 		var clicked, owl;
 		var data; // For Ajax request.
 		var moreImagesNewActiveImage;	// New image source link in more product images slider.
+		var term;
 
 		/**
 		 * Product plus click.
 		 */
-		$( '.cwpgt-product' ).on( 'click', '.cwpgt-product-actions', function( e ) {
+		$( '.term-products-wrapper' ).on( 'click', '.cwpgt-product-actions', function( e ) {
 			e.preventDefault();
 			btn = $( this );
 			slide = btn.closest( '.cwpgt-product' );
@@ -58,7 +72,7 @@ jQuery( function( $ ) {
 		/**
 		 * Show more info about product.
 		 */
-		$( '.cwpgt-product' ).on( 'click', '.cwpgt-more-info-button', function( e ) {
+		$( '.term-products-wrapper' ).on( 'click', '.cwpgt-more-info-button', function( e ) {
 			e.preventDefault();
 
 			if ( !isActiveAjax ) {	// If user can use ajax.
@@ -82,11 +96,8 @@ jQuery( function( $ ) {
 					btn.attr( 'data-clicked', 0 );
 				}, 1000 );
 
-				$( 'body' ).append(
-					'<div class = "cwpgt-product-more-info-preloader animated fadeIn">' +
-						'<i class = "fas fa-spinner cwpgt-product-more-info-preloader__icon"></i>' +
-					'</div>'
-				);
+				// Preloader appears.
+				appendPreloader( 'cwpgt-product-more-info-preloader' );
 
 				productId = $( this ).attr( 'data-id' );	// Get product ID from .cwp-slide-more-info-button data-id attribute.
 				ajaxData = {
@@ -272,6 +283,114 @@ jQuery( function( $ ) {
 
 			$( '.cwpgt-more-info-colors-item' ).removeClass( 'cwpgt-more-info-colors-item_active' );	// Remove active class from all product colors.
 			$( this ).addClass( 'cwpgt-more-info-colors-item_active' );	// Add active class to current product color.
+		} );
+
+		/**
+		 * Product term list item click.
+		 */
+		$( '.terms' ).on( 'click', '.term', function( e ) {
+			e.preventDefault();
+			$( '.term' ).removeClass( 'cwpgt_active' );	// Remove active class from all list items.
+			$( this ).addClass( 'cwpgt_active' );	// Add active class to current active item.
+
+			if ( !isActiveAjax ) {	// If user can use ajax.
+				isActiveAjax = true;	// Ajax for other actions is blocked.
+				term = $( this ).attr( 'data-term' );	// Get term slug from data-attribute.
+				sort = $( '.sort.cwpgt_active' ).attr( 'data-sort' );	// Get sorting type from data-attribute.
+
+				// Preloader appears.
+				appendPreloader( 'cwpgt-product-more-info-preloader' );
+
+				ajaxData = {	// Data for Ajax request.
+					action	: '_cwpgt_change_sort',
+					term	: term,
+					sort 	: sort
+				};
+
+				$.post( cwpAjax.ajaxurl, ajaxData, function( data ) {	// Ajax post request.
+					switch ( data.success ) {	// Checking ajax response.
+						case true: 	// If ajax response is success.
+							console.log( data.data.message );	// Show success message in console.
+							$( '.cwpgt-product-more-info-preloader' ).removeClass( 'fadeIn' ).addClass( 'fadeOut' );	// Hide preloader.
+							// Delay 1 second to play animation, then remove preloader.
+							setTimeout(
+								function() {
+									$( '.cwpgt-product-more-info-preloader' ).remove();	// Remove preloader from DOM.
+								},
+								1000
+							);
+
+							if ( data.data.structure != '' ) {	// If new HTML structure is not empty.
+								$( '.term-products-wrapper' ).html( data.data.structure );
+							}
+							isActiveAjax = false;	// User can use ajax ahead.
+			    			break;
+
+						case false: 	// If we have some errors.
+			    			console.log( data.data.message );	// Show errors in console.
+			    			isActiveAjax = false;	// User can use ajax ahead.
+
+			    		default: 	// Default variant.
+			    			console.log( 'Unknown error!' );	// Show message of unknown error in console.
+			    			isActiveAjax = false;	// User can use ajax ahead.
+			    			break;
+					}
+				} );
+			}
+		} );
+
+		/**
+		 * Product sorting types list item click.
+		 */
+		$( '.sorting' ).on( 'click', '.sort', function( e ) {
+			e.preventDefault();
+			$( '.sort' ).removeClass( 'cwpgt_active' );	// Remove active class from all list items.
+			$( this ).addClass( 'cwpgt_active' );	// Add active class to current active item.
+
+			if ( !isActiveAjax ) {	// If user can use ajax.
+				isActiveAjax = true;	// Ajax for other actions is blocked.
+				term = $( '.term.cwpgt_active' ).attr( 'data-term' );	// Get active term slug from data-attribute.
+				sort = $( this ).attr( 'data-sort' );	// Get sorting type from data-attribute.
+
+				// Preloader appears.
+				appendPreloader( 'cwpgt-product-more-info-preloader' );
+
+				ajaxData = {	// Data for Ajax request.
+					action	: '_cwpgt_change_sort',
+					term 	: term,
+					sort	: sort
+				};
+
+				$.post( cwpAjax.ajaxurl, ajaxData, function( data ) {	// Ajax post request.
+					switch ( data.success ) {	// Checking ajax response.
+						case true: 	// If ajax response is success.
+							console.log( data.data.message );	// Show success message in console.
+							$( '.cwpgt-product-more-info-preloader' ).removeClass( 'fadeIn' ).addClass( 'fadeOut' );	// Hide preloader.
+							// Delay 1 second to play animation, then remove preloader.
+							setTimeout(
+								function() {
+									$( '.cwpgt-product-more-info-preloader' ).remove();	// Remove preloader from DOM.
+								},
+								1000
+							);
+
+							if ( data.data.structure != '' ) {	// If new HTML structure is not empty.
+								$( '.term-products-wrapper' ).html( data.data.structure );
+							}
+							isActiveAjax = false;	// User can use ajax ahead.
+			    			break;
+
+						case false: 	// If we have some errors.
+			    			console.log( data.data.message );	// Show errors in console.
+			    			isActiveAjax = false;	// User can use ajax ahead.
+
+			    		default: 	// Default variant.
+			    			console.log( 'Unknown error!' );	// Show message of unknown error in console.
+			    			isActiveAjax = false;	// User can use ajax ahead.
+			    			break;
+					}
+				} );
+			}
 		} );
 	} );
 

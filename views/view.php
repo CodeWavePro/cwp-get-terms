@@ -30,11 +30,11 @@ $terms = get_terms(
 						foreach ( $terms as $key => $term ) {
 							// If it's the first element - add active class for brand color.
 							if ( $key === 0 ) {
-								echo '<li class = "term cwpgt_active">';
+								echo '<li class = "term cwpgt_active" data-term = "' . esc_attr__( $term->slug ) . '">';
 								// First term slug for first products sort after page load (used in new WP_Query in products sorting).
 								$first_term_slug = $term->slug;
 							}	else {	// Other elements without active class.
-								echo '<li class = "term">';
+								echo '<li class = "term" data-term = "' . esc_attr__( $term->slug ) . '">';
 							}
 
 							// Term name.
@@ -55,12 +55,12 @@ $terms = get_terms(
 					<!-- Sorting products by. -->
 					<ul class = "sorting">
 						<!-- Add active class for brand color to the first element. -->
-						<li class = "sort cwpgt_active"><?php esc_html_e( 'Новые', 'mebel-laim' ) ?></li>
-						<li class = "sort"><?php esc_html_e( 'Старые', 'mebel-laim' ) ?></li>
-						<li class = "sort"><?php esc_html_e( 'Дорогие', 'mebel-laim' ) ?></li>
-						<li class = "sort"><?php esc_html_e( 'Дешевые', 'mebel-laim' ) ?></li>
-						<li class = "sort"><?php esc_html_e( 'По алфавиту (А-Я)', 'mebel-laim' ) ?></li>
-						<li class = "sort"><?php esc_html_e( 'По алфавиту (Я-А)', 'mebel-laim' ) ?></li>
+						<li class = "sort cwpgt_active" data-sort = "new"><?php esc_html_e( 'Новые', 'mebel-laim' ) ?></li>
+						<li class = "sort" data-sort = "old"><?php esc_html_e( 'Старые', 'mebel-laim' ) ?></li>
+						<li class = "sort" data-sort = "expensive"><?php esc_html_e( 'Дорогие', 'mebel-laim' ) ?></li>
+						<li class = "sort" data-sort = "cheap"><?php esc_html_e( 'Дешевые', 'mebel-laim' ) ?></li>
+						<li class = "sort" data-sort = "az"><?php esc_html_e( 'По алфавиту (А-Я)', 'mebel-laim' ) ?></li>
+						<li class = "sort" data-sort = "za"><?php esc_html_e( 'По алфавиту (Я-А)', 'mebel-laim' ) ?></li>
 					</ul>
 				</div>
 			</div><!-- .fw-col-xs-12 -->
@@ -71,7 +71,7 @@ $terms = get_terms(
 				<?php
 				$new_query = new WP_Query(
 					[
-						'posts_per_page'	=> -1,	// No limit for count of displayed products.
+						'posts_per_page'	=> 12,	// No limit for count of displayed products.
 						'post_type'			=> 'products',	// Post type.
 						'tax_query'			=> [
 							[

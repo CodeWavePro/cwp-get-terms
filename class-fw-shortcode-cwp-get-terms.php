@@ -8,8 +8,13 @@ class FW_Shortcode_CWP_Get_Terms extends FW_Shortcode {
     }
 
     private function register_ajax() {
+    	// Show more product info.
         add_action( 'wp_ajax__cwpgt_show_more', array( $this, '_cwpgt_show_more' ) );
 		add_action( 'wp_ajax_nopriv__cwpgt_show_more', array( $this, '_cwpgt_show_more' ) );
+
+		// Change sorting type.
+		add_action( 'wp_ajax__cwpgt_change_sort', array( $this, '_cwpgt_change_sort' ) );
+		add_action( 'wp_ajax_nopriv__cwpgt_change_sort', array( $this, '_cwpgt_change_sort' ) );
     }
 
     /**
@@ -232,6 +237,256 @@ class FW_Shortcode_CWP_Get_Terms extends FW_Shortcode {
 				'manufacture'	=> $country_of_manufacture,
 				'guarantee'		=> $guarantee,
 				'message'		=> __( 'Дополнительные данные товара успешно получены.', 'mebel-laim' )
+			)
+		);
+    }
+
+    /**
+	 * Change sorting type.
+	 */
+    public function _cwpgt_change_sort() {
+    	$new_term = $_POST['term'];	// Getting new sorting type.
+    	$new_sort = $_POST['sort'];	// Getting new sorting type.
+
+		if ( empty( $new_term ) || empty( $new_sort ) ) {	// If term or sorting type is empty.
+			wp_send_json_error(	// Sending error message and exiting function.
+				array(
+					'message'	=> __( 'Неверный формат данных. Нужные данные не переданы.', 'mebel-laim' )
+				)
+			);
+		}
+
+		/**
+		 * Prepairing new HTML structure for sending.
+		 *
+		 * Check what new sorting type we've got.
+		 */
+		switch ( $new_sort ) {
+			case 'new':
+				$new_query = new WP_Query(
+					[
+						'posts_per_page'	=> 12,	// No limit for count of displayed products.
+						'post_type'			=> 'products',	// Post type.
+						'tax_query'			=> [
+							[
+								'taxonomy'	=> 'products',	// Taxonomy name.
+								'field'		=> 'slug',	// Posts will be outputing by term slug.
+								'terms'		=> $new_term	// Term slug.
+							]
+						],
+						'orderby'			=> 'date',
+						'order'				=> 'DESC'
+					]
+				);
+				break;
+
+			case 'old':
+				$new_query = new WP_Query(
+					[
+						'posts_per_page'	=> 12,	// No limit for count of displayed products.
+						'post_type'			=> 'products',	// Post type.
+						'tax_query'			=> [
+							[
+								'taxonomy'	=> 'products',	// Taxonomy name.
+								'field'		=> 'slug',	// Posts will be outputing by term slug.
+								'terms'		=> $new_term	// Term slug.
+							]
+						],
+						'orderby'			=> 'date',
+						'order'				=> 'ASC'
+					]
+				);
+				break;
+
+			case 'expensive':
+				$new_query = new WP_Query(
+					array(
+						'posts_per_page'	=> 12,	// No limit for count of displayed products.
+						'post_type'			=> 'products',	// Post type.
+						'tax_query'			=> array(
+							array(
+								'taxonomy'	=> 'products',	// Taxonomy name.
+								'field'		=> 'slug',	// Posts will be outputing by term slug.
+								'terms'		=> $new_term	// Term slug.
+							)
+						),
+						'meta_key'			=> 'fw_option:new_price',
+						'orderby'			=> 'meta_value_num',
+						'order'				=> 'DESC',
+						'meta_query'		=> array(
+							array(
+								'key'		=> 'fw_option:new_price',
+								'compare'	=> 'EXISTS'
+							)
+						)
+					)
+				);
+				break;
+
+			case 'cheap':
+				$new_query = new WP_Query(
+					array(
+						'posts_per_page'	=> 12,	// No limit for count of displayed products.
+						'post_type'			=> 'products',	// Post type.
+						'tax_query'			=> array(
+							array(
+								'taxonomy'	=> 'products',	// Taxonomy name.
+								'field'		=> 'slug',	// Posts will be outputing by term slug.
+								'terms'		=> $new_term	// Term slug.
+							)
+						),
+						'meta_key'			=> 'fw_option:new_price',
+						'orderby'			=> 'meta_value_num',
+						'order'				=> 'ASC',
+						'meta_query'		=> array(
+							array(
+								'key'		=> 'fw_option:new_price',
+								'compare'	=> 'EXISTS'
+							)
+						)
+					)
+				);
+				break;
+
+			case 'az':
+				$new_query = new WP_Query(
+					[
+						'posts_per_page'	=> 12,	// No limit for count of displayed products.
+						'post_type'			=> 'products',	// Post type.
+						'tax_query'			=> [
+							[
+								'taxonomy'	=> 'products',	// Taxonomy name.
+								'field'		=> 'slug',	// Posts will be outputing by term slug.
+								'terms'		=> $new_term	// Term slug.
+							]
+						],
+						'orderby'			=> 'title',
+						'order'				=> 'ASC'
+					]
+				);
+				break;
+
+			case 'za':
+				$new_query = new WP_Query(
+					[
+						'posts_per_page'	=> 12,	// No limit for count of displayed products.
+						'post_type'			=> 'products',	// Post type.
+						'tax_query'			=> [
+							[
+								'taxonomy'	=> 'products',	// Taxonomy name.
+								'field'		=> 'slug',	// Posts will be outputing by term slug.
+								'terms'		=> $new_term	// Term slug.
+							]
+						],
+						'orderby'			=> 'title',
+						'order'				=> 'DESC'
+					]
+				);
+				break;
+			
+			default:	// Default sorting will show standart sorting: from new to old products.
+				$new_query = new WP_Query(
+					[
+						'posts_per_page'	=> 12,	// No limit for count of displayed products.
+						'post_type'			=> 'products',	// Post type.
+						'tax_query'			=> [
+							[
+								'taxonomy'	=> 'products',	// Taxonomy name.
+								'field'		=> 'slug',	// Posts will be outputing by term slug.
+								'terms'		=> $new_term	// Term slug.
+							]
+						],
+						'orderby'			=> 'date',
+						'order'				=> 'DESC'
+					]
+				);
+				break;
+		}
+
+		$new_structure = '';	// Empty variable for new HTML structure to be sent.
+
+		// If our new query has posts (products).
+		if ( $new_query->have_posts() ) {
+			while( $new_query->have_posts() ) : $new_query->the_post();
+				$id = get_the_ID();
+				$new_structure .= '
+					<div class = "fw-col-md-3 fw-col-sm-4">
+						<div class = "cwpgt-product">
+							<div class = "cwpgt-product-image" style = "background-image: url(' . get_the_post_thumbnail_url( $id, 'medium' ) . ')">
+								<!-- Overlays are showing when PLUS icon is clicked. -->
+								<div class = "cwpgt-button-overlay-before_brand"></div>
+								<div class = "cwpgt-button-overlay-before"></div>
+
+								<!-- Buttons are showing when PLUS icon is clicked. -->
+								<div class = "cwpgt-button-overlay animated">
+									<a class = "button cwpgt-more-info-button animated" href = "#" data-id = "' . esc_attr__( $id ) . '">' . esc_html__( 'Больше информации', 'mebel-laim' ) . '</a>
+									<a class = "button animated" href = "#" style = "animation-delay: 150ms">' . esc_html__( 'Быстрый заказ', 'mebel-laim' ) . '</a>
+									<a class = "button animated" href = "#" style = "animation-delay: 300ms">' . esc_html__( 'Добавить в корзину', 'mebel-laim' ) . '</a>
+									<a class = "button animated" href = "' . get_the_permalink() . '" style = "animation-delay: 450ms">' . esc_html__( 'Перейти к товару', 'mebel-laim' ) . '</a>
+								</div>
+
+								<!-- PLUS icon. -->
+								<a href = "#" class = "cwpgt-product-actions" title = "' . esc_html__( 'Действия', 'mebel-laim' ) . '" data-clicked = "0">
+									<!-- Horizontal line. -->
+					 				<span class = "cwpgt-product-actions__line"></span>
+					 				<!-- Vertical line. -->
+					 				<span class = "cwpgt-product-actions__line cwpgt-product-actions__line_cross"></span>
+					 			</a>
+							</div><!-- .cwpgt-product-image -->
+
+							<div class = "cwpgt-product-term">';
+					 			// Getting all terms of current product in taxonomy "products".
+					 			$terms = wp_get_post_terms( $id, 'products' );
+
+					 			// Searching if one of terms has no child terms - this is the lowest term, we need it.
+					 			foreach ( $terms as $term ) {
+					 				if ( count( get_term_children( $term->term_id, 'products' ) ) === 0 ) {
+					 					$new_structure .= '<a class = "cwpgt-product-term__link" href = "' . get_term_link( $term->term_id, 'products' ) . '">' . esc_html__( $term->name, 'mebel-laim' ) . '</a>';
+					 					break;
+					 				}
+					 			}
+					 		$new_structure .= '</div><!-- .cwp-slide-term -->
+
+							<div class = "cwpgt-product-info">
+								<div class = "cwpgt-product-title">
+						 			<h3 class = "cwpgt-product-text__header">' .
+						 				get_the_title() .
+						 			'</h3>
+						 		</div>
+
+						 		<div class = "cwpgt-product-price">';
+					 				/**
+					 				 * If product new price is not empty.
+					 				 * 
+					 				 * @ Product -> Prices -> New Price.
+					 				 */
+						 			if ( fw_get_db_post_option( $id, 'new_price' ) ) {
+						 				$new_structure .= '<span class = "cwpgt-product-price__new">' .
+						 					number_format( fw_get_db_post_option( $id, 'new_price' ), 0, '.', ' ' ) . '
+						 					<!--
+						 					RUBLE icon for currency (from Font Awesome Icons).
+						 					@link https://fontawesome.com/icons
+						 					-->
+						 					<span class = "cwpgt-product-price__currency"><i class = "fas fa-ruble-sign"></i></span>
+						 				</span>';
+						 			}
+						 			$new_structure .= '
+						 		</div><!-- .cwpgt-product-price -->
+							</div><!-- .cwpgt-product-info -->
+						</div><!-- .cwpgt-product -->
+					</div><!-- .fw-col-md-3 -->
+				';
+			endwhile;
+		}	else {
+			$new_structure .= esc_html__( 'По заданным критериям поиска товаров не найдено.', 'mebel-laim' );
+		}
+		wp_reset_query();	// Clearing query ($new_query) for correct work of other loops.
+
+		// Success ajax message.
+		wp_send_json_success(
+			array(
+				'message'	=> __( 'Сортировка по заданному термину таксономии выполнена успешно.', 'mebel-laim' ),
+				'structure'	=> $new_structure
 			)
 		);
     }
