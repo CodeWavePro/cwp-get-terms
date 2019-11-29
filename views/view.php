@@ -63,6 +63,65 @@ $terms = get_terms(
 						<li class = "sort" data-sort = "za"><?php esc_html_e( 'По алфавиту (Я-А)', 'mebel-laim' ) ?></li>
 					</ul>
 				</div>
+
+				<div class = "price-sorting-wrapper">
+					<!--
+					Icon from Font Awesome Icons.
+					@link https://fontawesome.com/icons
+					-->
+					<i class = "fas fa-ruble-sign cwpgt-icon"></i>
+
+					<?php
+					$min_and_max_price_query = new WP_Query(
+						[
+							'posts_per_page'	=> -1,	// No limit for count of displayed products.
+							'post_type'			=> 'products',	// Post type.
+							'tax_query'			=> [
+								[
+									'taxonomy'	=> 'products',	// Taxonomy name.
+									'field'		=> 'slug',	// Posts will be outputing by term slug.
+									'terms'		=> $first_term_slug	// Term slug.
+								]
+							]
+						]
+					);
+
+					if ( $min_and_max_price_query->have_posts() ) {
+						$iter = 0;
+
+						while( $min_and_max_price_query->have_posts() ) : $min_and_max_price_query->the_post();
+							$id = get_the_ID();
+
+							if ( $iter === 0 ) {	// If it's first iteration.
+								$min_price = $max_price = fw_get_db_post_option( $id, 'new_price' );	// Min & Max prices = first in array product price.
+								$iter++;
+								continue;	// Go to next iteration.
+							}
+
+							if ( fw_get_db_post_option( $id, 'new_price' ) > $max_price ) {
+								$max_price = fw_get_db_post_option( $id, 'new_price' );
+							}
+
+							if ( fw_get_db_post_option( $id, 'new_price' ) < $min_price ) {
+								$min_price = fw_get_db_post_option( $id, 'new_price' );
+							}
+
+							$iter++;
+						endwhile;
+					}
+					wp_reset_query();	// Clearing query ($new_query) for correct work of other loops.
+					?>
+
+					<!-- Input fields for min & max price. -->
+					<div class = "price-sorting">
+						<input type = "text" class = "price-sorting__input price-sorting__input_min" value = "<?php esc_attr_e( $min_price ) ?>" data-min = "<?php esc_attr_e( $min_price ) ?>" />
+						<input type = "text" class = "price-sorting__input price-sorting__input_max" value = "<?php esc_attr_e( $max_price ) ?>" data-max = "<?php esc_attr_e( $max_price ) ?>" />
+						<span class = "cwpgt-apply-filters" title = "<?php esc_attr_e( 'Применить фильтры', 'mebel-laim' ) ?>">
+							<i class = "fas fa-filter cwpgt-icon_sort"></i>
+							<?php esc_html_e( 'Применить фильтры', 'mebel-laim' ) ?>
+						</span>
+					</div>
+				</div>
 			</div><!-- .fw-col-xs-12 -->
 		</div><!-- .fw-row -->
 
@@ -77,7 +136,7 @@ $terms = get_terms(
 							[
 								'taxonomy'	=> 'products',	// Taxonomy name.
 								'field'		=> 'slug',	// Posts will be outputing by term slug.
-								'terms'		=> 'italianskaia-furnitura'	// Term slug.
+								'terms'		=> $first_term_slug	// Term slug.
 							]
 						]
 					]

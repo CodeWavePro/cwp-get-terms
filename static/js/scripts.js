@@ -21,7 +21,9 @@ jQuery( function( $ ) {
 		var clicked, owl;
 		var data; // For Ajax request.
 		var moreImagesNewActiveImage;	// New image source link in more product images slider.
-		var term;
+		var term;	// Sorting by term.
+		var sort;	// Sorting by sorting type.
+		var minPrice, maxPrice;	// Sorting by price.
 
 		/**
 		 * Product plus click.
@@ -292,51 +294,6 @@ jQuery( function( $ ) {
 			e.preventDefault();
 			$( '.term' ).removeClass( 'cwpgt_active' );	// Remove active class from all list items.
 			$( this ).addClass( 'cwpgt_active' );	// Add active class to current active item.
-
-			if ( !isActiveAjax ) {	// If user can use ajax.
-				isActiveAjax = true;	// Ajax for other actions is blocked.
-				term = $( this ).attr( 'data-term' );	// Get term slug from data-attribute.
-				sort = $( '.sort.cwpgt_active' ).attr( 'data-sort' );	// Get sorting type from data-attribute.
-
-				// Preloader appears.
-				appendPreloader( 'cwpgt-product-more-info-preloader' );
-
-				ajaxData = {	// Data for Ajax request.
-					action	: '_cwpgt_change_sort',
-					term	: term,
-					sort 	: sort
-				};
-
-				$.post( cwpAjax.ajaxurl, ajaxData, function( data ) {	// Ajax post request.
-					switch ( data.success ) {	// Checking ajax response.
-						case true: 	// If ajax response is success.
-							console.log( data.data.message );	// Show success message in console.
-							$( '.cwpgt-product-more-info-preloader' ).removeClass( 'fadeIn' ).addClass( 'fadeOut' );	// Hide preloader.
-							// Delay 1 second to play animation, then remove preloader.
-							setTimeout(
-								function() {
-									$( '.cwpgt-product-more-info-preloader' ).remove();	// Remove preloader from DOM.
-								},
-								1000
-							);
-
-							if ( data.data.structure != '' ) {	// If new HTML structure is not empty.
-								$( '.term-products-wrapper' ).html( data.data.structure );
-							}
-							isActiveAjax = false;	// User can use ajax ahead.
-			    			break;
-
-						case false: 	// If we have some errors.
-			    			console.log( data.data.message );	// Show errors in console.
-			    			isActiveAjax = false;	// User can use ajax ahead.
-
-			    		default: 	// Default variant.
-			    			console.log( 'Unknown error!' );	// Show message of unknown error in console.
-			    			isActiveAjax = false;	// User can use ajax ahead.
-			    			break;
-					}
-				} );
-			}
 		} );
 
 		/**
@@ -346,32 +303,77 @@ jQuery( function( $ ) {
 			e.preventDefault();
 			$( '.sort' ).removeClass( 'cwpgt_active' );	// Remove active class from all list items.
 			$( this ).addClass( 'cwpgt_active' );	// Add active class to current active item.
+		} );
 
+		// If the letter is not digit then display error and don't type anything.
+		$( '.price-sorting__input' ).keypress( function( e ) {
+			if ( e.which != 8 && e.which != 0 && ( e.which < 48 || e.which > 57 ) ) {
+				$( '.price-sorting' ).append( '<span class = "sorting-message sorting-message_error">Только цифры!</span>' );	// Show error message.
+				setTimeout(
+					function() {
+						$( '.sorting-message' ).remove();	// Remove preloader from DOM.
+					},
+					5000
+				);
+			   	return false;
+			}
+
+			if ( ( $( this ).val() == 0 ) || ( $( this ).val() == '' ) ) {
+				$( this ).val( 1 );
+			}
+		} );
+
+		// When input losts its focus, check its value.
+		$( '.price-sorting__input' ).focusout( function( e ) {
+			if ( ( $( this ).val() <= 0 ) || ( $( this ).val() == '' ) ) {
+				$( this ).val( 1 );
+			}
+		} );
+
+		/**
+		 * Apply filters.
+		 */
+		$( '.price-sorting' ).on( 'click', '.cwpgt-apply-filters', function( e ) {
 			if ( !isActiveAjax ) {	// If user can use ajax.
 				isActiveAjax = true;	// Ajax for other actions is blocked.
-				term = $( '.term.cwpgt_active' ).attr( 'data-term' );	// Get active term slug from data-attribute.
-				sort = $( this ).attr( 'data-sort' );	// Get sorting type from data-attribute.
+				term = $( '.term.cwpgt_active' ).attr( 'data-term' );	// Get term slug from data-attribute.
+				sort = $( '.sort.cwpgt_active' ).attr( 'data-sort' );	// Get sorting type from data-attribute.
+				minPrice = $( '.price-sorting__input_min' ).val();
+				maxPrice = $( '.price-sorting__input_max' ).val();
 
 				// Preloader appears.
 				appendPreloader( 'cwpgt-product-more-info-preloader' );
 
 				ajaxData = {	// Data for Ajax request.
-					action	: '_cwpgt_change_sort',
-					term 	: term,
-					sort	: sort
+					action				: '_cwpgt_apply_filters',
+					term				: term,
+					sort 				: sort,
+					min 				: minPrice,
+					max 				: maxPrice
 				};
 
 				$.post( cwpAjax.ajaxurl, ajaxData, function( data ) {	// Ajax post request.
+					$( '.cwpgt-product-more-info-preloader' ).removeClass( 'fadeIn' ).addClass( 'fadeOut' );	// Hide preloader.
+					// Delay 1 second to play animation, then remove preloader.
+					setTimeout(
+						function() {
+							$( '.cwpgt-product-more-info-preloader' ).remove();	// Remove preloader from DOM.
+						},
+						1000
+					);
+
+					if ( $( 'span' ).hasClass( 'sorting-message' ) ) {
+						$( '.sorting-message' ).remove(); // Clear field for response message text. It will append again.
+					}
+
 					switch ( data.success ) {	// Checking ajax response.
 						case true: 	// If ajax response is success.
-							console.log( data.data.message );	// Show success message in console.
-							$( '.cwpgt-product-more-info-preloader' ).removeClass( 'fadeIn' ).addClass( 'fadeOut' );	// Hide preloader.
-							// Delay 1 second to play animation, then remove preloader.
+							$( '.price-sorting' ).append( '<span class = "sorting-message">' + data.data.message + '</span>' );	// Show success message.
 							setTimeout(
 								function() {
-									$( '.cwpgt-product-more-info-preloader' ).remove();	// Remove preloader from DOM.
+									$( '.sorting-message' ).remove();	// Remove preloader from DOM.
 								},
-								1000
+								5000
 							);
 
 							if ( data.data.structure != '' ) {	// If new HTML structure is not empty.
@@ -381,17 +383,19 @@ jQuery( function( $ ) {
 			    			break;
 
 						case false: 	// If we have some errors.
-			    			console.log( data.data.message );	// Show errors in console.
+			    			$( '.price-sorting' ).append( '<span class = "sorting-message sorting-message_error">' + data.data.message + '</span>' );	// Show error message.
+			    			setTimeout(
+								function() {
+									$( '.sorting-message' ).remove();	// Remove preloader from DOM.
+								},
+								5000
+							);
 			    			isActiveAjax = false;	// User can use ajax ahead.
-
-			    		default: 	// Default variant.
-			    			console.log( 'Unknown error!' );	// Show message of unknown error in console.
-			    			isActiveAjax = false;	// User can use ajax ahead.
-			    			break;
 					}
 				} );
 			}
 		} );
+
 	} );
 
 } );

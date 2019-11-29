@@ -9,27 +9,44 @@ $text: #323232;
     padding: 0 0 100px
 }
 
-// Terms list wrapper.
-.terms-wrapper {
+// Terms & sorting types list wrappers.
+.terms-wrapper,
+.sorting-wrapper {
     margin: 0 0 15px
 }
 
-// Sorting types wrapper
-.sorting-wrapper {
+// Sort by price wrapper.
+.price-sorting-wrapper {
     margin: 0 0 30px
 }
 
 // Icons before terms/sort wrapper.
-.cwpgt-icon {
+.cwpgt-icon,
+.cwpgt-icon_sort {
     color: $brand;
     width: 16px;
     text-align: center;
     margin-right: 10px
 }
 
+.cwpgt-icon_sort {
+    margin: 0 5px 0 0
+}
+
+.cwpgt-apply-filters {
+    cursor: pointer;
+    color: #b5b5b5;
+    transition: all ease-in-out 300ms;
+
+    &:hover {
+        color: $brand
+    }
+}
+
 // Terms/sorting items list.
 .terms,
-.sorting {
+.sorting,
+.price-sorting {
     display: inline-block
 }
 
@@ -52,8 +69,39 @@ $text: #323232;
     }
 }
 
+// Text inputs for min & max prices.
+.price-sorting__input[type="text"] {
+    display: inline-block;
+    width: 60px;
+    border-color: #b5b5b5;
+    margin-right: 30px;
+    color: #b5b5b5;
+    text-align: center
+}
+
+// Active class.
 .cwpgt_active {
 	color: $brand
+}
+
+// Simple (success) message after Ajax request when sorting.
+.sorting-message {
+    margin-left: 15px;
+    animation: sorting-message-fade-out linear 5s 1;
+}
+
+// Error message (Ajax response).
+.sorting-message_error {
+    color: #ff3e3e
+}
+
+@keyframes sorting-message-fade-out {
+    0% {
+        opacity: 1
+    }
+    100% {
+        opacity: 0
+    }
 }
 
 /**
@@ -571,6 +619,35 @@ $text: #323232;
 // More info buttons block single button.
 .cwpgt-more-info-buttons__button {
     margin: 10px
+}
+
+// Range slider.
+.slider {
+    appearance: none;
+    width: 100%;
+    height: 15px;
+    border-radius: 5px;  
+    background: #b5b5b5;
+    outline: none;
+    opacity: 0.7;
+    transition: all ease-in-out 300ms;
+
+    &::-webkit-slider-thumb {
+        appearance: none;
+        width: 25px;
+        height: 25px;
+        border-radius: 50%; 
+        background: $brand;
+        cursor: pointer
+    }
+
+    &::-moz-range-thumb {
+        width: 25px;
+        height: 25px;
+        border-radius: 50%;
+        background: $brand;
+        cursor: pointer
+    }
 }
 
 @media (max-width : 767px) {

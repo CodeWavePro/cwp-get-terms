@@ -13,8 +13,8 @@ class FW_Shortcode_CWP_Get_Terms extends FW_Shortcode {
 		add_action( 'wp_ajax_nopriv__cwpgt_show_more', array( $this, '_cwpgt_show_more' ) );
 
 		// Change sorting type.
-		add_action( 'wp_ajax__cwpgt_change_sort', array( $this, '_cwpgt_change_sort' ) );
-		add_action( 'wp_ajax_nopriv__cwpgt_change_sort', array( $this, '_cwpgt_change_sort' ) );
+		add_action( 'wp_ajax__cwpgt_apply_filters', array( $this, '_cwpgt_apply_filters' ) );
+		add_action( 'wp_ajax_nopriv__cwpgt_apply_filters', array( $this, '_cwpgt_apply_filters' ) );
     }
 
     /**
@@ -244,20 +244,44 @@ class FW_Shortcode_CWP_Get_Terms extends FW_Shortcode {
     /**
 	 * Change sorting type.
 	 */
-    public function _cwpgt_change_sort() {
-    	$new_term = $_POST['term'];	// Getting new sorting type.
+    public function _cwpgt_apply_filters() {
+    	$new_term = $_POST['term'];	// Getting new term.
     	$new_sort = $_POST['sort'];	// Getting new sorting type.
+    	$min_sort = $_POST['min'];	// Getting new min price value.
+    	$max_sort = $_POST['max'];	// Getting new max price value.
 
-		if ( empty( $new_term ) || empty( $new_sort ) ) {	// If term or sorting type is empty.
+		if ( empty( $new_term ) ||
+			 empty( $new_sort ) ||
+			 empty( $min_sort ) ||
+			 empty( $max_sort ) ) {	// If some param or sorting type is empty.
 			wp_send_json_error(	// Sending error message and exiting function.
 				array(
-					'message'	=> __( 'Неверный формат данных. Нужные данные не переданы.', 'mebel-laim' )
+					'message'	=> __( 'Нужные данные не переданы.', 'mebel-laim' )
+				)
+			);
+		}
+
+		if ( !is_numeric( $min_sort ) ||
+			 !is_numeric( $max_sort ) ) {	// If min or max price is not numeric.
+			wp_send_json_error(	// Sending error message and exiting function.
+				array(
+					'message'	=> __( 'Цена не является числом.', 'mebel-laim' )
+				)
+			);
+		}
+
+		if ( ( $min_sort > $max_sort ) ||
+			 ( $min_sort < 0 ) ||
+			 ( $max_sort < 0 ) ) {	// If min price larger than max price.
+			wp_send_json_error(	// Sending error message and exiting function.
+				array(
+					'message'	=> __( 'Проверьте правильность введенного диапазона цен.', 'mebel-laim' )
 				)
 			);
 		}
 
 		/**
-		 * Prepairing new HTML structure for sending.
+		 * If all previous is OK - prepairing new HTML structure for sending.
 		 *
 		 * Check what new sorting type we've got.
 		 */
@@ -275,7 +299,15 @@ class FW_Shortcode_CWP_Get_Terms extends FW_Shortcode {
 							]
 						],
 						'orderby'			=> 'date',
-						'order'				=> 'DESC'
+						'order'				=> 'DESC',
+						'meta_query'		=> array(
+							array(
+								'key'     => 'fw_option:new_price',
+								'value'   => array( $min_sort, $max_sort ),
+								'compare' => 'BETWEEN',
+								'type'    => 'NUMERIC'
+							)
+						)
 					]
 				);
 				break;
@@ -293,7 +325,15 @@ class FW_Shortcode_CWP_Get_Terms extends FW_Shortcode {
 							]
 						],
 						'orderby'			=> 'date',
-						'order'				=> 'ASC'
+						'order'				=> 'ASC',
+						'meta_query'		=> array(
+							array(
+								'key'     => 'fw_option:new_price',
+								'value'   => array( $min_sort, $max_sort ),
+								'compare' => 'BETWEEN',
+								'type'    => 'NUMERIC'
+							)
+						)
 					]
 				);
 				break;
@@ -315,8 +355,10 @@ class FW_Shortcode_CWP_Get_Terms extends FW_Shortcode {
 						'order'				=> 'DESC',
 						'meta_query'		=> array(
 							array(
-								'key'		=> 'fw_option:new_price',
-								'compare'	=> 'EXISTS'
+								'key'     => 'fw_option:new_price',
+								'value'   => array( $min_sort, $max_sort ),
+								'compare' => 'BETWEEN',
+								'type'    => 'NUMERIC'
 							)
 						)
 					)
@@ -340,8 +382,10 @@ class FW_Shortcode_CWP_Get_Terms extends FW_Shortcode {
 						'order'				=> 'ASC',
 						'meta_query'		=> array(
 							array(
-								'key'		=> 'fw_option:new_price',
-								'compare'	=> 'EXISTS'
+								'key'     => 'fw_option:new_price',
+								'value'   => array( $min_sort, $max_sort ),
+								'compare' => 'BETWEEN',
+								'type'    => 'NUMERIC'
 							)
 						)
 					)
@@ -361,7 +405,15 @@ class FW_Shortcode_CWP_Get_Terms extends FW_Shortcode {
 							]
 						],
 						'orderby'			=> 'title',
-						'order'				=> 'ASC'
+						'order'				=> 'ASC',
+						'meta_query'		=> array(
+							array(
+								'key'     => 'fw_option:new_price',
+								'value'   => array( $min_sort, $max_sort ),
+								'compare' => 'BETWEEN',
+								'type'    => 'NUMERIC'
+							)
+						)
 					]
 				);
 				break;
@@ -379,7 +431,15 @@ class FW_Shortcode_CWP_Get_Terms extends FW_Shortcode {
 							]
 						],
 						'orderby'			=> 'title',
-						'order'				=> 'DESC'
+						'order'				=> 'DESC',
+						'meta_query'		=> array(
+							array(
+								'key'     => 'fw_option:new_price',
+								'value'   => array( $min_sort, $max_sort ),
+								'compare' => 'BETWEEN',
+								'type'    => 'NUMERIC'
+							)
+						)
 					]
 				);
 				break;
@@ -397,7 +457,15 @@ class FW_Shortcode_CWP_Get_Terms extends FW_Shortcode {
 							]
 						],
 						'orderby'			=> 'date',
-						'order'				=> 'DESC'
+						'order'				=> 'DESC',
+						'meta_query'		=> array(
+							array(
+								'key'     => 'fw_option:new_price',
+								'value'   => array( $min_sort, $max_sort ),
+								'compare' => 'BETWEEN',
+								'type'    => 'NUMERIC'
+							)
+						)
 					]
 				);
 				break;
@@ -477,17 +545,25 @@ class FW_Shortcode_CWP_Get_Terms extends FW_Shortcode {
 					</div><!-- .fw-col-md-3 -->
 				';
 			endwhile;
+
+			// Success ajax message.
+			wp_send_json_success(
+				array(
+					'message'	=> __( 'Сортировка выполнена успешно!', 'mebel-laim' ),
+					'structure'	=> $new_structure
+				)
+			);
 		}	else {
-			$new_structure .= esc_html__( 'По заданным критериям поиска товаров не найдено.', 'mebel-laim' );
+			$new_structure .= esc_html__( 'К сожалению, ничего не найдено...', 'mebel-laim' );
+
+			// Success ajax message.
+			wp_send_json_error(
+				array(
+					'message'	=> __( 'Товаров не найдено!', 'mebel-laim' ),
+					'structure'	=> $new_structure
+				)
+			);
 		}
 		wp_reset_query();	// Clearing query ($new_query) for correct work of other loops.
-
-		// Success ajax message.
-		wp_send_json_success(
-			array(
-				'message'	=> __( 'Сортировка по заданному термину таксономии выполнена успешно.', 'mebel-laim' ),
-				'structure'	=> $new_structure
-			)
-		);
     }
 }
