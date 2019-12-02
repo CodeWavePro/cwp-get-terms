@@ -144,14 +144,13 @@ jQuery( function( $ ) {
 								    dots 		: false,
 								    responsive	: {
 								    	0: {
+								    		items: 4
 								    	},
-								    	500: {
+								    	600: {
+								    		items: 8
 								    	},
 								    	800: {
-								    	},
-								    	1200: {
-								    	},
-								    	1600: {
+								    		items: 12
 								    	}
 								    }
 							    } );
