@@ -24,6 +24,7 @@ jQuery( function( $ ) {
 		var term;	// Sorting by term.
 		var sort;	// Sorting by sorting type.
 		var minPrice, maxPrice;	// Sorting by price.
+		var paginationLink, productsTerm, productsPerPage, productsCurrentPage;	// Ajax products pagination.
 
 		/**
 		 * Product plus click.
@@ -236,6 +237,7 @@ jQuery( function( $ ) {
 						case false: 	// If we have some errors.
 			    			console.log( data.data.message );	// Show errors in console.
 			    			isActiveAjax = false;	// User can use ajax ahead.
+			    			break;
 
 			    		default: 	// Default variant.
 			    			console.log( 'Unknown error!' );	// Show message of unknown error in console.
@@ -339,12 +341,15 @@ jQuery( function( $ ) {
 				sort = $( '.sort.cwpgt_active' ).attr( 'data-sort' );	// Get sorting type from data-attribute.
 				minPrice = $( '.price-sorting__input_min' ).val();
 				maxPrice = $( '.price-sorting__input_max' ).val();
+				paginationLink = $( this );
+				productsPerPage = parseInt( paginationLink.closest( '.fw-container' ).find( '.cwpgt-pagination' ).attr( 'data-per-page' ) );
 
 				// Preloader appears.
 				appendPreloader( 'cwpgt-product-more-info-preloader' );
 
 				ajaxData = {	// Data for Ajax request.
 					action				: '_cwpgt_apply_filters',
+					products_per_page	: productsPerPage,
 					term				: term,
 					sort 				: sort,
 					min 				: minPrice,
@@ -376,7 +381,11 @@ jQuery( function( $ ) {
 							);
 
 							if ( data.data.structure != '' ) {	// If new HTML structure is not empty.
-								$( '.term-products-wrapper' ).html( data.data.structure );
+								paginationLink.closest( '.fw-container' ).find( '.term-products-wrapper' ).html( data.data.structure );
+							}
+
+							if ( data.data.pagination != '' ) {	// If new pagination structure is not empty.
+								paginationLink.closest( '.fw-container' ).find( '.cwpgt-pagination' ).html( data.data.pagination );
 							}
 							isActiveAjax = false;	// User can use ajax ahead.
 			    			break;
@@ -390,6 +399,97 @@ jQuery( function( $ ) {
 								5000
 							);
 			    			isActiveAjax = false;	// User can use ajax ahead.
+			    			break;
+
+			    		default: 	// Default variant.
+			    			console.log( 'Unknown error!' );	// Show message of unknown error in console.
+			    			isActiveAjax = false;	// User can use ajax ahead.
+			    			break;
+					}
+				} );
+			}
+		} );
+
+		/**
+		 * Pagination. Page number click.
+		 */
+		$( '.cwpgt-pagination' ).on( 'click', 'a.page-numbers', function( e ) {
+			e.preventDefault();
+
+			if ( !isActiveAjax ) {	// If user can use ajax.
+				isActiveAjax = true;	// Ajax for other actions is blocked.
+				paginationLink = $( this );
+				productsTerm = $( '.term.cwpgt_active' ).attr( 'data-term' );	// Get term slug from data-attribute.
+				productsPerPage = parseInt( paginationLink.closest( '.cwpgt-pagination' ).attr( 'data-per-page' ) );
+
+				sort = $( '.sort.cwpgt_active' ).attr( 'data-sort' );	// Get sorting type from data-attribute.
+				minPrice = $( '.price-sorting__input_min' ).val();
+				maxPrice = $( '.price-sorting__input_max' ).val();
+
+				if ( paginationLink.hasClass( 'cwpgt-pagination__previous' ) ) {
+					productsCurrentPage = parseInt( paginationLink.closest( '.cwpgt-pagination' ).find( '.page-numbers.current' ).html() ) - 1;
+				}	else if ( paginationLink.hasClass( 'cwpgt-pagination__next' ) ) {
+					productsCurrentPage = parseInt( paginationLink.closest( '.cwpgt-pagination' ).find( '.page-numbers.current' ).html() ) + 1;
+				}	else {
+					productsCurrentPage = parseInt( paginationLink.html() );
+				}
+
+				// Preloader appears.
+				appendPreloader( 'cwpgt-product-more-info-preloader' );
+
+				ajaxData = {
+					action 					: '_cwpgt_pagination_number_click',
+					products_term			: productsTerm,
+					products_per_page		: productsPerPage,
+					products_current_page	: productsCurrentPage,
+					sort 					: sort,
+					min 					: minPrice,
+					max 					: maxPrice
+				};
+
+				$.post( cwpAjax.ajaxurl, ajaxData, function( data ) {	// Ajax post request.
+					switch ( data.success ) {	// Checking ajax response.
+						case true: 	// If ajax response is success.
+							console.log( data.data.message );	// Show success message in console.
+							$( '.cwpgt-product-more-info-preloader' ).removeClass( 'fadeIn' ).addClass( 'fadeOut' );	// Hide preloader.
+
+							// Delay 1 second to play animation, then remove preloader.
+							setTimeout(
+								function() {
+									$( '.cwpgt-product-more-info-preloader' ).remove();	// Remove preloader from DOM.
+								},
+								1000
+							);
+
+							if ( data.data.structure != '' ) {	// If new HTML structure is not empty.
+								$( '.term-products-wrapper' ).html( data.data.structure );
+							}
+
+							if ( data.data.pagination != '' ) {	// If new pagination structure is not empty.
+								$( '.cwpgt-pagination' ).html( data.data.pagination );
+							}
+
+							// Scroll to the top of the products list.
+							$( 'html, body' ).animate( {
+						        scrollTop: $( '.term-products-wrapper' ).offset().top
+						    }, 'slow' );
+
+							isActiveAjax = false;	// User can use ajax ahead.
+			    			break;
+
+						case false: 	// If we have some errors.
+			    			console.log( data.data.message );	// Show errors in console.
+			    			$( '.cwpgt-product-more-info-preloader' ).removeClass( 'fadeIn' ).addClass( 'fadeOut' );	// Hide preloader.
+
+							// Delay 1 second to play animation, then remove preloader.
+							setTimeout(
+								function() {
+									$( '.cwpgt-product-more-info-preloader' ).remove();	// Remove preloader from DOM.
+								},
+								1000
+							);
+			    			isActiveAjax = false;	// User can use ajax ahead.
+			    			break;
 					}
 				} );
 			}

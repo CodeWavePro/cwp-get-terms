@@ -621,6 +621,65 @@ $text: #323232;
     margin: 10px
 }
 
+.cwpgt-pagination {
+    margin-top: 15px;
+    padding: 0 10px;
+    text-align: right;
+
+    .page-numbers {
+        font-size: 21px;
+        margin: 0 5px;
+        color: $text;
+
+        &.current {
+            color: $brand;
+            font-weight: bold
+        }
+    }
+
+    .cwpgt-pagination__previous,
+    .cwpgt-pagination__next {
+        position: relative;
+        width: 30px;
+        height: 43px;
+        top: -10px;
+
+        .cwpgt-product-actions__line,
+        .cwpgt-product-actions__line_cross {
+            position: relative;
+            background-color: $text
+        }
+    }
+
+    .cwpgt-pagination__previous {
+        margin-right: 30px;
+
+        .cwpgt-product-actions__line {
+            transform: rotate(-45deg);
+            top: 10px
+        }
+
+        .cwpgt-product-actions__line_cross {
+            transform: rotate(45deg);
+            top: 30px
+        }
+    }
+
+    .cwpgt-pagination__next {
+        margin-left: 30px;
+
+        .cwpgt-product-actions__line {
+            transform: rotate(45deg);
+            top: 10px
+        }
+
+        .cwpgt-product-actions__line_cross {
+            transform: rotate(-45deg);
+            top: 30px
+        }
+    }
+}
+
 @media (max-width : 991px) {
     .cwpgt-more-info {
         grid-area: mi;
@@ -638,6 +697,10 @@ $text: #323232;
         'mi  mi  mi';
         overflow-y: scroll
     }
+
+    .cwpgt-pagination {
+        text-align: center
+    }
 }
 
 @media (max-width : 767px) {
@@ -645,10 +708,34 @@ $text: #323232;
         width: 290px;
         margin: 0 auto 30px
     }
-}
 
-@media (max-width : 767px) {
     .cwpgt-more-info-wrapper {
         grid-template-rows: 400px 1000px
+    }
+
+    .cwpgt-icon {
+        vertical-align: top
+    }
+
+    .term,
+    .sort {
+        padding: 10px 0
+    }
+
+    .price-sorting__input[type="text"] {
+        width: 50px;
+        margin-right: 20px
+    }
+}
+
+@media (max-width : 480px) {
+    .cwpgt-pagination {
+        .cwpgt-pagination__previous {
+            margin-right: 15px
+        }
+
+        .cwpgt-pagination__next {
+            margin-left: 15px
+        }
     }
 }

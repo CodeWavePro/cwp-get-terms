@@ -109,7 +109,6 @@ $terms = get_terms(
 							$iter++;
 						endwhile;
 					}
-					wp_reset_query();	// Clearing query ($new_query) for correct work of other loops.
 					?>
 
 					<!-- Input fields for min & max price. -->
@@ -128,9 +127,10 @@ $terms = get_terms(
 		<div class = "fw-row">
 			<div class = "term-products-wrapper clear">
 				<?php
+				$products_per_page = ( isset( $atts['products_per_page'] ) && $atts['products_per_page'] ) ? $atts['products_per_page'] : 1;
 				$new_query = new WP_Query(
 					[
-						'posts_per_page'	=> 12,	// No limit for count of displayed products.
+						'posts_per_page'	=> $products_per_page,	// Limit of displayed products.
 						'post_type'			=> 'products',	// Post type.
 						'tax_query'			=> [
 							[
@@ -224,9 +224,46 @@ $terms = get_terms(
 				}	else {
 					esc_html_e( 'По заданным критериям поиска товаров не найдено.', 'mebel-laim' );
 				}
-				wp_reset_query();	// Clearing query ($new_query) for correct work of other loops.
 				?>
 			</div><!-- .term-products-wrapper.clear -->
+
+			<!--
+				Products pagination.
+				@attr data-per-page - products per page count from options
+			-->
+			<div class = "cwpgt-pagination" data-per-page = "<?php esc_attr_e( $products_per_page ) ?>">
+				<?php if ( $new_query->max_num_pages > 1 ) : ?>
+					<a href = "#" class = "page-numbers cwpgt-pagination__previous">
+						<span class = "cwpgt-product-actions__line"></span>
+						<span class = "cwpgt-product-actions__line cwpgt-product-actions__line_cross"></span>
+					</a>
+
+				    <?php
+			        echo paginate_links(
+			        	array(
+				            'base'         => str_replace( 999999999, '%#%', esc_url( get_pagenum_link( 999999999 ) ) ),
+				            'total'        => $new_query->max_num_pages,
+				            'current'      => max( 1, get_query_var( 'paged' ) ),
+				            'format'       => '?paged=%#%',
+				            'show_all'     => false,
+				            'type'         => 'plain',
+				            'end_size'     => 2,
+				            'mid_size'     => 1,
+				            'prev_next'    => false,
+				            'add_args'     => false,
+				            'add_fragment' => ''
+			        	)
+			        );
+				    ?>
+
+				    <a href = "#" class = "page-numbers cwpgt-pagination__next">
+						<span class = "cwpgt-product-actions__line"></span>
+						<span class = "cwpgt-product-actions__line cwpgt-product-actions__line_cross"></span>
+					</a>
+				<?php endif ?>
+			</div>
+
+			<?php wp_reset_query();	// Clearing query ($new_query) for correct work of other loops. ?>
 		</div><!-- .fw-row -->
 	</div><!-- .fw-container -->
 
