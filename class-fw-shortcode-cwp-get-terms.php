@@ -230,14 +230,6 @@ class FW_Shortcode_CWP_Get_Terms extends FW_Shortcode {
 		// Pagination page numbers clicks.
 		add_action( 'wp_ajax__cwpgt_pagination_number_click', array( $this, '_cwpgt_pagination_number_click' ) );
 		add_action( 'wp_ajax_nopriv__cwpgt_pagination_number_click', array( $this, '_cwpgt_pagination_number_click' ) );
-
-		// Pagination previous page click.
-		add_action( 'wp_ajax__cwpgt_pagination_previous_click', array( $this, '_cwpgt_pagination_previous_click' ) );
-		add_action( 'wp_ajax_nopriv__cwpgt_pagination_previous_click', array( $this, '_cwpgt_pagination_previous_click' ) );
-
-		// Pagination next page click.
-		add_action( 'wp_ajax__cwpgt_pagination_next_click', array( $this, '_cwpgt_pagination_next_click' ) );
-		add_action( 'wp_ajax_nopriv__cwpgt_pagination_next_click', array( $this, '_cwpgt_pagination_next_click' ) );
     }
 
     /**
@@ -266,13 +258,10 @@ class FW_Shortcode_CWP_Get_Terms extends FW_Shortcode {
 			// Array for product images, CSS-animation for appearing.
 			$more_product_images_array = '
 				<div class = "cwpgt-more-info-image cwpgt-more-info-image_active animated fadeInUp"
-					 style = "
-					 	background-image: url(' . esc_attr__( get_the_post_thumbnail_url( $product_id, 'full' ) ) . ');
-					 	animation-delay: 100ms
-					 "
-					 data-src = "' . esc_attr__( get_the_post_thumbnail_url( $product_id, 'full' ) ) . '">
-				</div>
-			';
+					 style = "background-image: url(' . esc_url( get_the_post_thumbnail_url( $product_id, 'full' ) ) . ');
+					 		  animation-delay: 100ms"
+					 data-src = "' . esc_url( get_the_post_thumbnail_url( $product_id, 'full' ) ) . '">
+				</div>';
 			// Full size product thumbnail.
 			$product_image = get_the_post_thumbnail_url( $product_id, 'full' );
 		}	else {
@@ -284,13 +273,10 @@ class FW_Shortcode_CWP_Get_Terms extends FW_Shortcode {
 			foreach ( fw_get_db_post_option( $product_id, 'images' ) as $key => $image ) {
 				$more_product_images_array .=  '
 					<div class = "cwpgt-more-info-image animated fadeInUp"
-						 style = "
-						 	background-image: url(' . esc_attr__( $image['image']['url'] ) . ');
-						 	animation-delay: ' . ( 100 * ( $key + 2 ) ) . 'ms;
-						 "
-						 data-src = "' . esc_attr__( $image['image']['url'] ) . '">
-					</div>
-				';
+						 style = "background-image: url(' . esc_url( $image['image']['url'] ) . ');
+						 		  animation-delay: ' . ( 100 * ( $key + 2 ) ) . 'ms"
+						 data-src = "' . esc_url( $image['image']['url'] ) . '">
+					</div>';
 			}
 		}
 
@@ -309,18 +295,18 @@ class FW_Shortcode_CWP_Get_Terms extends FW_Shortcode {
 
 				// If color has name.
 				if ( isset( $color['color_name'] ) ) {
-					$product_colors_array .= '<span class = "cwpgt-more-info-colors-item__title">' . esc_html__( $color['color_name'] ) . '</span>';
+					$product_colors_array .= '<span class = "cwpgt-more-info-colors-item__title">' . sprintf( esc_html__( '%s', 'mebel-laim' ), $color['color_name'] ) . '</span>';
 				}
 
 				// If color type is chosen.
 				if ( isset( $color['color_type'] ) ) {
 					switch ( $color['color_type']['color_type_select'] ) {
 						case 'color_pallete':	// If color is chosen as pallete.
-							$product_colors_array .= '<span class = "cwpgt-more-info-colors-item__color" style = "background-color: ' . esc_attr__( $color['color_type']['color_pallete']['if_color_pallete'] ) . '"></span>';
+							$product_colors_array .= '<span class = "cwpgt-more-info-colors-item__color" style = "background-color: ' . esc_attr( $color['color_type']['color_pallete']['if_color_pallete'] ) . '"></span>';
 							break;
 
 						case 'image_upload':	// If color is chosen as image.
-							$product_colors_array .= '<span class = "cwpgt-more-info-colors-item__color" style = "background-image: url(' . esc_attr__( $color['color_type']['image_upload']['if_image_upload']['url'] ) . ')"></span>';
+							$product_colors_array .= '<span class = "cwpgt-more-info-colors-item__color" style = "background-image: url(' . esc_url( $color['color_type']['image_upload']['if_image_upload']['url'] ) . ')"></span>';
 							break;
 						
 						default:
@@ -362,7 +348,7 @@ class FW_Shortcode_CWP_Get_Terms extends FW_Shortcode {
 			 * @link https://fontawesome.com/icons
 			 */
 			$product_type = '<span class = "cwpgt-product__label"><i class = "fas fa-bullseye cwpgt-more-info__icon"></i>' . esc_html__( 'Тип:', 'mebel-laim' ) . '</span>' .
-							'<span class = "cwpgt-product__value">' . fw_get_db_post_option( $product_id, 'product_type' ) . '</span>';
+							'<span class = "cwpgt-product__value">' . sprintf( esc_html__( '%s', 'mebel-laim' ), fw_get_db_post_option( $product_id, 'product_type' ) ) . '</span>';
 		}	else {
 			$product_type = '';
 		}
@@ -370,7 +356,7 @@ class FW_Shortcode_CWP_Get_Terms extends FW_Shortcode {
 		// Product material.
 		if ( fw_get_db_post_option( $product_id, 'material' ) ) {
 			$product_material = '<span class = "cwpgt-product__label"><i class = "fas fa-bullseye cwpgt-more-info__icon"></i>' . esc_html__( 'Материал:', 'mebel-laim' ) . '</span>' .
-								'<span class = "cwpgt-product__value">' . fw_get_db_post_option( $product_id, 'material' ) . '</span>';
+								'<span class = "cwpgt-product__value">' . sprintf( esc_html__( '%s', 'mebel-laim' ), fw_get_db_post_option( $product_id, 'material' ) ) . '</span>';
 		}	else {
 			$product_material = '';
 		}
@@ -378,7 +364,7 @@ class FW_Shortcode_CWP_Get_Terms extends FW_Shortcode {
 		// Product width.
 		if ( fw_get_db_post_option( $product_id, 'width' ) ) {
 			$product_width = '<span class = "cwpgt-product__label"><i class = "fas fa-bullseye cwpgt-more-info__icon"></i>' . esc_html__( 'Длина:', 'mebel-laim' ) . '</span>' .
-							 '<span class = "cwpgt-product__value">' . fw_get_db_post_option( $product_id, 'width' ) . '</span>';
+							 '<span class = "cwpgt-product__value">' . sprintf( esc_html__( '%f', 'mebel-laim' ), fw_get_db_post_option( $product_id, 'width' ) ) . '</span>';
 		}	else {
 			$product_width = '';
 		}
@@ -386,7 +372,7 @@ class FW_Shortcode_CWP_Get_Terms extends FW_Shortcode {
 		// Product height.
 		if ( fw_get_db_post_option( $product_id, 'height' ) ) {
 			$product_height = '<span class = "cwpgt-product__label"><i class = "fas fa-bullseye cwpgt-more-info__icon"></i>' . esc_html__( 'Высота:', 'mebel-laim' ) . '</span>' .
-							  '<span class = "cwpgt-product__value">' . fw_get_db_post_option( $product_id, 'height' ) . '</span>';
+							  '<span class = "cwpgt-product__value">' . sprintf( esc_html__( '%f', 'mebel-laim' ), fw_get_db_post_option( $product_id, 'height' ) ) . '</span>';
 		}	else {
 			$product_height = '';
 		}
@@ -394,7 +380,7 @@ class FW_Shortcode_CWP_Get_Terms extends FW_Shortcode {
 		// Product depth.
 		if ( fw_get_db_post_option( $product_id, 'depth' ) ) {
 			$product_depth = '<span class = "cwpgt-product__label"><i class = "fas fa-bullseye cwpgt-more-info__icon"></i>' . esc_html__( 'Глубина:', 'mebel-laim' ) . '</span>' .
-							 '<span class = "cwpgt-product__value">' . fw_get_db_post_option( $product_id, 'depth' ) . '</span>';
+							 '<span class = "cwpgt-product__value">' . sprintf( esc_html__( '%f', 'mebel-laim' ), fw_get_db_post_option( $product_id, 'depth' ) ) . '</span>';
 		}	else {
 			$product_depth = '';
 		}
@@ -402,7 +388,7 @@ class FW_Shortcode_CWP_Get_Terms extends FW_Shortcode {
 		// Product more features.
 		if ( fw_get_db_post_option( $product_id, 'more_features' ) ) {
 			$product_text = '<span class = "cwpgt-product__label"><i class = "fas fa-bullseye cwpgt-more-info__icon"></i>' . esc_html__( 'Дополнительная информация:', 'mebel-laim' ) . '</span>' .
-							'<span class = "cwpgt-product__value">' . fw_get_db_post_option( $product_id, 'more_features' ) . '</span>';
+							'<span class = "cwpgt-product__value">' . sprintf( esc_html__( '%s', 'mebel-laim' ), fw_get_db_post_option( $product_id, 'more_features' ) ) . '</span>';
 		}	else {
 			$product_text = '';
 		}
@@ -410,7 +396,7 @@ class FW_Shortcode_CWP_Get_Terms extends FW_Shortcode {
 		// Number of products per pack.
 		if ( fw_get_db_post_option( $product_id, 'number_per_pack' ) ) {
 			$number_per_pack = '<span class = "cwpgt-product__label"><i class = "fas fa-bullseye cwpgt-more-info__icon"></i>' . esc_html__( 'Единиц товара в упаковке:', 'mebel-laim' ) . '</span>' .
-							   '<span class = "cwpgt-product__value">' . fw_get_db_post_option( $product_id, 'number_per_pack' ) . '</span>';
+							   '<span class = "cwpgt-product__value">' . sprintf( esc_html__( '%d', 'mebel-laim' ), fw_get_db_post_option( $product_id, 'number_per_pack' ) ) . '</span>';
 		}	else {
 			$number_per_pack = '';
 		}
@@ -418,7 +404,7 @@ class FW_Shortcode_CWP_Get_Terms extends FW_Shortcode {
 		// Brand name.
 		if ( fw_get_db_post_option( $product_id, 'brand_name' ) ) {
 			$brand_name = '<span class = "cwpgt-product__label"><i class = "fas fa-bullseye cwpgt-more-info__icon"></i>' . esc_html__( 'Производитель:', 'mebel-laim' ) . '</span>' .
-						  '<span class = "cwpgt-product__value">' . fw_get_db_post_option( $product_id, 'brand_name' ) . '</span>';
+						  '<span class = "cwpgt-product__value">' . sprintf( esc_html__( '%s', 'mebel-laim' ), fw_get_db_post_option( $product_id, 'brand_name' ) ) . '</span>';
 		}	else {
 			$brand_name = '';
 		}
@@ -426,7 +412,7 @@ class FW_Shortcode_CWP_Get_Terms extends FW_Shortcode {
 		// Country of manufacture.
 		if ( fw_get_db_post_option( $product_id, 'country_of_manufacture' ) ) {
 			$country_of_manufacture = '<span class = "cwpgt-product__label"><i class = "fas fa-bullseye cwpgt-more-info__icon"></i>' . esc_html__( 'Страна производства:', 'mebel-laim' ) . '</span>' .
-							   		  '<span class = "cwpgt-product__value">' . fw_get_db_post_option( $product_id, 'country_of_manufacture' ) . '</span>';
+							   		  '<span class = "cwpgt-product__value">' . sprintf( esc_html__( '%s', 'mebel-laim' ), fw_get_db_post_option( $product_id, 'country_of_manufacture' ) ) . '</span>';
 		}	else {
 			$country_of_manufacture = '';
 		}
@@ -434,7 +420,7 @@ class FW_Shortcode_CWP_Get_Terms extends FW_Shortcode {
 		// Guarantee.
 		if ( fw_get_db_post_option( $product_id, 'guarantee' ) ) {
 			$guarantee = '<span class = "cwpgt-product__label"><i class = "fas fa-bullseye cwpgt-more-info__icon"></i>' . esc_html__( 'Гарантия:', 'mebel-laim' ) . '</span>' .
-					     '<span class = "cwpgt-product__value">' . fw_get_db_post_option( $product_id, 'guarantee' ) . '</span>';
+					     '<span class = "cwpgt-product__value">' . sprintf( esc_html__( '%s', 'mebel-laim' ), fw_get_db_post_option( $product_id, 'guarantee' ) ) . '</span>';
 		}	else {
 			$guarantee = '';
 		}
@@ -520,17 +506,25 @@ class FW_Shortcode_CWP_Get_Terms extends FW_Shortcode {
 				$new_structure .= '
 					<div class = "fw-col-md-3 fw-col-sm-4">
 						<div class = "cwpgt-product">
-							<div class = "cwpgt-product-image" style = "background-image: url(' . get_the_post_thumbnail_url( $id, 'medium' ) . ')">
+							<div class = "cwpgt-product-image" style = "background-image: url(' . esc_attr( get_the_post_thumbnail_url( $id, 'medium' ) ) . ')">
 								<!-- Overlays are showing when PLUS icon is clicked. -->
 								<div class = "cwpgt-button-overlay-before_brand"></div>
 								<div class = "cwpgt-button-overlay-before"></div>
 
 								<!-- Buttons are showing when PLUS icon is clicked. -->
 								<div class = "cwpgt-button-overlay animated">
-									<a class = "button cwpgt-more-info-button animated" href = "#" data-id = "' . esc_attr__( $id ) . '">' . esc_html__( 'Больше информации', 'mebel-laim' ) . '</a>
-									<a class = "button animated" href = "#" style = "animation-delay: 150ms">' . esc_html__( 'Быстрый заказ', 'mebel-laim' ) . '</a>
-									<a class = "button animated" href = "#" style = "animation-delay: 300ms">' . esc_html__( 'Добавить в корзину', 'mebel-laim' ) . '</a>
-									<a class = "button animated" href = "' . get_the_permalink() . '" style = "animation-delay: 450ms">' . esc_html__( 'Перейти к товару', 'mebel-laim' ) . '</a>
+									<a class = "button cwpgt-more-info-button animated" href = "#" data-id = "' . esc_attr( $id ) . '">' .
+										esc_html__( 'Больше информации', 'mebel-laim' ) .
+									'</a>
+									<a class = "button animated" href = "#" style = "animation-delay: 150ms">' .
+										esc_html__( 'Быстрый заказ', 'mebel-laim' ) .
+									'</a>
+									<a class = "button animated" href = "#" style = "animation-delay: 300ms">' .
+										esc_html__( 'Добавить в корзину', 'mebel-laim' ) .
+									'</a>
+									<a class = "button animated" href = "' . esc_url( get_the_permalink() ) . '" style = "animation-delay: 450ms">' .
+										esc_html__( 'Перейти к товару', 'mebel-laim' ) .
+									'</a>
 								</div>
 
 								<!-- PLUS icon. -->
@@ -549,7 +543,7 @@ class FW_Shortcode_CWP_Get_Terms extends FW_Shortcode {
 					 			// Searching if one of terms has no child terms - this is the lowest term, we need it.
 					 			foreach ( $terms as $term ) {
 					 				if ( count( get_term_children( $term->term_id, 'products' ) ) === 0 ) {
-					 					$new_structure .= '<a class = "cwpgt-product-term__link" href = "' . get_term_link( $term->term_id, 'products' ) . '">' . esc_html__( $term->name, 'mebel-laim' ) . '</a>';
+					 					$new_structure .= '<a class = "cwpgt-product-term__link" href = "' . esc_url( get_term_link( $term->term_id, 'products' ) ) . '">' . sprintf( esc_html__( '%s', 'mebel-laim' ), $term->name ) . '</a>';
 					 					break;
 					 				}
 					 			}
@@ -722,15 +716,23 @@ class FW_Shortcode_CWP_Get_Terms extends FW_Shortcode {
 				$output .= '
 					<div class = "fw-col-md-3 fw-col-sm-4">
 						<div class = "cwpgt-product">
-							<div class = "cwpgt-product-image" style = "background-image: url(' . get_the_post_thumbnail_url( $id, 'medium' ) . ')">
+							<div class = "cwpgt-product-image" style = "background-image: url(' . esc_url( get_the_post_thumbnail_url( $id, 'medium' ) ) . ')">
 								<div class = "cwpgt-button-overlay-before_brand"></div>
 								<div class = "cwpgt-button-overlay-before"></div>
 
 								<div class = "cwpgt-button-overlay animated">
-									<a class = "button cwpgt-more-info-button animated" href = "#" data-id = "' . esc_attr__( $id ) . '">' . esc_html__( 'Больше информации', 'mebel-laim' ) . '</a>
-									<a class = "button animated" href = "#" style = "animation-delay: 150ms">' . esc_html__( 'Быстрый заказ', 'mebel-laim' ) . '</a>
-									<a class = "button animated" href = "#" style = "animation-delay: 300ms">' . esc_html__( 'Добавить в корзину', 'mebel-laim' ) . '</a>
-									<a class = "button animated" href = "' . get_the_permalink( $id ) . '" style = "animation-delay: 450ms">' . esc_html__( 'Перейти к товару', 'mebel-laim' ) . '</a>
+									<a class = "button cwpgt-more-info-button animated" href = "#" data-id = "' . esc_attr( $id ) . '">' .
+										esc_html__( 'Больше информации', 'mebel-laim' ) .
+									'</a>
+									<a class = "button animated" href = "#" style = "animation-delay: 150ms">' .
+										esc_html__( 'Быстрый заказ', 'mebel-laim' ) .
+									'</a>
+									<a class = "button animated" href = "#" style = "animation-delay: 300ms">' .
+										esc_html__( 'Добавить в корзину', 'mebel-laim' ) .
+									'</a>
+									<a class = "button animated" href = "' . esc_url( get_the_permalink( $id ) ) . '" style = "animation-delay: 450ms">' .
+										esc_html__( 'Перейти к товару', 'mebel-laim' ) .
+									'</a>
 								</div>
 
 								<a href = "#" class = "cwpgt-product-actions" title = "' . esc_html__( 'Действия', 'mebel-laim' ) . '" data-clicked = "0">
@@ -746,7 +748,7 @@ class FW_Shortcode_CWP_Get_Terms extends FW_Shortcode {
 					 			// Searching if one of terms has no child terms - this is the lowest term, we need it.
 					 			foreach ( $terms as $term ) {
 					 				if ( count( get_term_children( $term->term_id, 'products' ) ) === 0 ) {
-					 					$output .= '<a class = "cwpgt-product-term__link" href = "' . get_term_link( $term->term_id, 'products' ) . '">' . esc_html__( $term->name, 'mebel-laim' ) . '</a>';
+					 					$output .= '<a class = "cwpgt-product-term__link" href = "' . esc_url( get_term_link( $term->term_id, 'products' ) ) . '">' . sprintf( esc_html__( '%s', 'mebel-laim' ), $term->name ) . '</a>';
 					 					break;
 					 				}
 					 			}
@@ -812,7 +814,7 @@ class FW_Shortcode_CWP_Get_Terms extends FW_Shortcode {
 			array(
 				'structure'		=> $output,
 				'pagination'	=> $paginate_links,
-				'message'		=> esc_html__( 'Успешная загрузка страницы товаров #', 'mebel-laim' ) . $products_current_page
+				'message'		=> sprintf( esc_html__( 'Успешная загрузка страницы товаров #%d', 'mebel-laim' ), $products_current_page )
 			)
 		);
     }

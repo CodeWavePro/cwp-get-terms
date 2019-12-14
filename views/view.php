@@ -30,15 +30,15 @@ $terms = get_terms(
 						foreach ( $terms as $key => $term ) {
 							// If it's the first element - add active class for brand color.
 							if ( $key === 0 ) {
-								echo '<li class = "term cwpgt_active" data-term = "' . esc_attr__( $term->slug ) . '">';
+								echo '<li class = "term cwpgt_active" data-term = "' . esc_attr( $term->slug ) . '">';
 								// First term slug for first products sort after page load (used in new WP_Query in products sorting).
 								$first_term_slug = $term->slug;
 							}	else {	// Other elements without active class.
-								echo '<li class = "term" data-term = "' . esc_attr__( $term->slug ) . '">';
+								echo '<li class = "term" data-term = "' . esc_attr( $term->slug ) . '">';
 							}
 
 							// Term name.
-							printf( esc_html__('%s', 'mebel-laim'), $term->name );
+							printf( esc_html__( '%s', 'mebel-laim' ), $term->name );
 							echo '</li>';
 						}
 						?>
@@ -55,12 +55,24 @@ $terms = get_terms(
 					<!-- Sorting products by. -->
 					<ul class = "sorting">
 						<!-- Add active class for brand color to the first element. -->
-						<li class = "sort cwpgt_active" data-sort = "new"><?php esc_html_e( 'Новые', 'mebel-laim' ) ?></li>
-						<li class = "sort" data-sort = "old"><?php esc_html_e( 'Старые', 'mebel-laim' ) ?></li>
-						<li class = "sort" data-sort = "expensive"><?php esc_html_e( 'Дорогие', 'mebel-laim' ) ?></li>
-						<li class = "sort" data-sort = "cheap"><?php esc_html_e( 'Дешевые', 'mebel-laim' ) ?></li>
-						<li class = "sort" data-sort = "az"><?php esc_html_e( 'По алфавиту (А-Я)', 'mebel-laim' ) ?></li>
-						<li class = "sort" data-sort = "za"><?php esc_html_e( 'По алфавиту (Я-А)', 'mebel-laim' ) ?></li>
+						<li class = "sort cwpgt_active" data-sort = "new">
+							<?php esc_html_e( 'Новые', 'mebel-laim' ) ?>
+						</li>
+						<li class = "sort" data-sort = "old">
+							<?php esc_html_e( 'Старые', 'mebel-laim' ) ?>
+						</li>
+						<li class = "sort" data-sort = "expensive">
+							<?php esc_html_e( 'Дорогие', 'mebel-laim' ) ?>
+						</li>
+						<li class = "sort" data-sort = "cheap">
+							<?php esc_html_e( 'Дешевые', 'mebel-laim' ) ?>
+						</li>
+						<li class = "sort" data-sort = "az">
+							<?php esc_html_e( 'По алфавиту (А-Я)', 'mebel-laim' ) ?>
+						</li>
+						<li class = "sort" data-sort = "za">
+							<?php esc_html_e( 'По алфавиту (Я-А)', 'mebel-laim' ) ?>
+						</li>
 					</ul>
 				</div>
 
@@ -113,8 +125,8 @@ $terms = get_terms(
 
 					<!-- Input fields for min & max price. -->
 					<div class = "price-sorting">
-						<input type = "text" class = "price-sorting__input price-sorting__input_min" value = "<?php esc_attr_e( $min_price ) ?>" data-min = "<?php esc_attr_e( $min_price ) ?>" />
-						<input type = "text" class = "price-sorting__input price-sorting__input_max" value = "<?php esc_attr_e( $max_price ) ?>" data-max = "<?php esc_attr_e( $max_price ) ?>" />
+						<input type = "text" class = "price-sorting__input price-sorting__input_min" value = "<?php echo esc_attr( $min_price ) ?>" data-min = "<?php echo esc_attr( $min_price ) ?>" />
+						<input type = "text" class = "price-sorting__input price-sorting__input_max" value = "<?php echo esc_attr( $max_price ) ?>" data-max = "<?php echo esc_attr( $max_price ) ?>" />
 						<span class = "cwpgt-apply-filters" title = "<?php esc_attr_e( 'Применить фильтры', 'mebel-laim' ) ?>">
 							<i class = "fas fa-filter cwpgt-icon_sort"></i>
 							<?php esc_html_e( 'Применить фильтры', 'mebel-laim' ) ?>
@@ -149,21 +161,29 @@ $terms = get_terms(
 						?>
 						<div class = "fw-col-md-3 fw-col-sm-4">
 							<div class = "cwpgt-product">
-								<div class = "cwpgt-product-image" style = "background-image: url(<?php echo get_the_post_thumbnail_url( $id, 'medium' ) ?>)">
+								<div class = "cwpgt-product-image" style = "background-image: url(<?php echo esc_url( get_the_post_thumbnail_url( $id, 'medium' ) ) ?>)">
 									<!-- Overlays are showing when PLUS icon is clicked. -->
 									<div class = "cwpgt-button-overlay-before_brand"></div>
 									<div class = "cwpgt-button-overlay-before"></div>
 
 									<!-- Buttons are showing when PLUS icon is clicked. -->
 									<div class = "cwpgt-button-overlay animated">
-										<a class = "button cwpgt-more-info-button animated" href = "#" data-id = "<?php esc_attr_e( $id ) ?>"><?php _e( 'Больше информации', 'mebel-laim' ) ?></a>
-										<a class = "button animated" href = "#" style = "animation-delay: 150ms"><?php _e( 'Быстрый заказ', 'mebel-laim' ) ?></a>
-										<a class = "button animated" href = "#" style = "animation-delay: 300ms"><?php _e( 'Добавить в корзину', 'mebel-laim' ) ?></a>
-										<a class = "button animated" href = "<?php the_permalink() ?>" style = "animation-delay: 450ms"><?php _e( 'Перейти к товару', 'mebel-laim' ) ?></a>
+										<a class = "button cwpgt-more-info-button animated" href = "#" data-id = "<?php echo esc_attr( $id ) ?>">
+											<?php esc_html_e( 'Больше информации', 'mebel-laim' ) ?>
+										</a>
+										<a class = "button animated" href = "#" style = "animation-delay: 150ms">
+											<?php esc_html_e( 'Быстрый заказ', 'mebel-laim' ) ?>
+										</a>
+										<a class = "button animated" href = "#" style = "animation-delay: 300ms">
+											<?php esc_html_e( 'Добавить в корзину', 'mebel-laim' ) ?>
+										</a>
+										<a class = "button animated" href = "<?php esc_url( the_permalink() ) ?>" style = "animation-delay: 450ms">
+											<?php esc_html_e( 'Перейти к товару', 'mebel-laim' ) ?>
+										</a>
 									</div>
 
 									<!-- PLUS icon. -->
-									<a href = "#" class = "cwpgt-product-actions" title = "<?php _e( 'Действия', 'mebel-laim' ) ?>" data-clicked = "0">
+									<a href = "#" class = "cwpgt-product-actions" title = "<?php esc_attr_e( 'Действия', 'mebel-laim' ) ?>" data-clicked = "0">
 										<!-- Horizontal line. -->
 						 				<span class = "cwpgt-product-actions__line"></span>
 						 				<!-- Vertical line. -->
@@ -180,7 +200,7 @@ $terms = get_terms(
 						 			foreach ( $terms as $term ) {
 						 				if ( count( get_term_children( $term->term_id, 'products' ) ) === 0 ) {
 						 					?>
-						 					<a class = "cwpgt-product-term__link" href = "<?php echo get_term_link( $term->term_id, 'products' ) ?>">
+						 					<a class = "cwpgt-product-term__link" href = "<?php echo esc_url( get_term_link( $term->term_id, 'products' ) ) ?>">
 						 						<?php printf( esc_html__('%s', 'mebel-laim'), $term->name ) ?>
 						 					</a>
 						 					<?php
@@ -233,7 +253,7 @@ $terms = get_terms(
 				Products pagination.
 				@attr data-per-page - products per page count from options
 			-->
-			<div class = "cwpgt-pagination" data-per-page = "<?php printf( esc_attr__('%d', 'mebel-laim'), $products_per_page ) ?>">
+			<div class = "cwpgt-pagination" data-per-page = "<?php echo esc_attr( $products_per_page ) ?>">
 				<?php if ( $new_query->max_num_pages > 1 ) : ?>
 					<a href = "#" class = "page-numbers cwpgt-pagination__previous">
 						<span class = "cwpgt-product-actions__line"></span>
@@ -300,9 +320,15 @@ $terms = get_terms(
 			<div class = "cwpgt-more-info-item cwpgt-more-info-text animated"></div>
 
 			<div class = "cwpgt-more-info-buttons">
-				<a class = "button cwpgt-more-info-buttons__button button_go-to-product" href = "#"><?php esc_html_e( 'На страницу товара', 'mebel-laim' ) ?></a>
-				<a class = "button cwpgt-more-info-buttons__button button_add-to-cart" href = "#"><?php esc_html_e( 'Добавить в корзину', 'mebel-laim' ) ?></a>
-				<a class = "button cwpgt-more-info-buttons__button button_quick-order" href = "#"><?php esc_html_e( 'Быстрый заказ', 'mebel-laim' ) ?></a>
+				<a class = "button cwpgt-more-info-buttons__button button_go-to-product" href = "#">
+					<?php esc_html_e( 'На страницу товара', 'mebel-laim' ) ?>
+				</a>
+				<a class = "button cwpgt-more-info-buttons__button button_add-to-cart" href = "#">
+					<?php esc_html_e( 'Добавить в корзину', 'mebel-laim' ) ?>
+				</a>
+				<a class = "button cwpgt-more-info-buttons__button button_quick-order" href = "#">
+					<?php esc_html_e( 'Быстрый заказ', 'mebel-laim' ) ?>
+				</a>
 			</div>
 		</div><!-- .cwp-more-info -->
 
