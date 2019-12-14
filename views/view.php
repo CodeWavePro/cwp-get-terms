@@ -38,7 +38,7 @@ $terms = get_terms(
 							}
 
 							// Term name.
-							esc_html_e( $term->name );
+							printf( esc_html__('%s', 'mebel-laim'), $term->name );
 							echo '</li>';
 						}
 						?>
@@ -180,7 +180,9 @@ $terms = get_terms(
 						 			foreach ( $terms as $term ) {
 						 				if ( count( get_term_children( $term->term_id, 'products' ) ) === 0 ) {
 						 					?>
-						 					<a class = "cwpgt-product-term__link" href = "<?php echo get_term_link( $term->term_id, 'products' ) ?>"><?php esc_html_e( $term->name, 'mebel-laim' ) ?></a>
+						 					<a class = "cwpgt-product-term__link" href = "<?php echo get_term_link( $term->term_id, 'products' ) ?>">
+						 						<?php printf( esc_html__('%s', 'mebel-laim'), $term->name ) ?>
+						 					</a>
 						 					<?php
 						 					break;
 						 				}
@@ -231,7 +233,7 @@ $terms = get_terms(
 				Products pagination.
 				@attr data-per-page - products per page count from options
 			-->
-			<div class = "cwpgt-pagination" data-per-page = "<?php esc_attr_e( $products_per_page ) ?>">
+			<div class = "cwpgt-pagination" data-per-page = "<?php printf( esc_attr__('%d', 'mebel-laim'), $products_per_page ) ?>">
 				<?php if ( $new_query->max_num_pages > 1 ) : ?>
 					<a href = "#" class = "page-numbers cwpgt-pagination__previous">
 						<span class = "cwpgt-product-actions__line"></span>
@@ -270,7 +272,7 @@ $terms = get_terms(
 	<!-- Hidden block to show more info about product, when .cwp-slide-more-info-button is clicked. -->
 	<div class = "cwpgt-more-info-wrapper animated">
 		<!-- Close wrapper. -->
-		<a href = "#" class = "close-popup" title = "<?php _e( 'Действия', 'mebel-laim' ) ?>" data-clicked = "0">
+		<a href = "#" class = "close-popup" title = "<?php esc_attr_e( 'Действия', 'mebel-laim' ) ?>" data-clicked = "0">
 			<!-- Horizontal line. -->
 			<span class = "cwpgt-product-actions__line"></span>
 			<!-- Vertical line. -->
@@ -298,9 +300,9 @@ $terms = get_terms(
 			<div class = "cwpgt-more-info-item cwpgt-more-info-text animated"></div>
 
 			<div class = "cwpgt-more-info-buttons">
-				<a class = "button cwpgt-more-info-buttons__button button_go-to-product" href = "#"><?php _e( 'На страницу товара', 'mebel-laim' ) ?></a>
-				<a class = "button cwpgt-more-info-buttons__button button_add-to-cart" href = "#"><?php _e( 'Добавить в корзину', 'mebel-laim' ) ?></a>
-				<a class = "button cwpgt-more-info-buttons__button button_quick-order" href = "#"><?php _e( 'Быстрый заказ', 'mebel-laim' ) ?></a>
+				<a class = "button cwpgt-more-info-buttons__button button_go-to-product" href = "#"><?php esc_html_e( 'На страницу товара', 'mebel-laim' ) ?></a>
+				<a class = "button cwpgt-more-info-buttons__button button_add-to-cart" href = "#"><?php esc_html_e( 'Добавить в корзину', 'mebel-laim' ) ?></a>
+				<a class = "button cwpgt-more-info-buttons__button button_quick-order" href = "#"><?php esc_html_e( 'Быстрый заказ', 'mebel-laim' ) ?></a>
 			</div>
 		</div><!-- .cwp-more-info -->
 
