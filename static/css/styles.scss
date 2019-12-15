@@ -629,7 +629,7 @@ $text: #323232;
     .page-numbers {
         font-size: 21px;
         margin: 0 5px;
-        color: $text;
+        color: #b5b5b5;
 
         &.current {
             color: $brand;
@@ -647,7 +647,7 @@ $text: #323232;
         .cwpgt-product-actions__line,
         .cwpgt-product-actions__line_cross {
             position: relative;
-            background-color: $text
+            background-color: #b5b5b5
         }
     }
 
