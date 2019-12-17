@@ -121,6 +121,7 @@ $terms = get_terms(
 							$iter++;
 						endwhile;
 					}
+					wp_reset_query();
 					?>
 
 					<!-- Input fields for min & max price. -->
