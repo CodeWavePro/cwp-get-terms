@@ -691,6 +691,7 @@ $text: #323232;
         grid-template-areas:
         'mir mir mir'
         'mi  mi  mi';
+        overflow-x: hidden;
         overflow-y: scroll
     }
 
