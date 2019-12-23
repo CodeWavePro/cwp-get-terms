@@ -719,6 +719,14 @@ $text: #323232;
         padding: 10px 0
     }
 
+    .terms-wrapper,
+    .sorting-wrapper,
+    .price-sorting-wrapper {
+        display: grid;
+        grid-template-columns: 30px auto;
+        align-items: center
+    }
+
     .price-sorting__input[type="text"] {
         width: 50px;
         margin-right: 20px
