@@ -327,9 +327,6 @@ $preloader_icon = ( isset( $atts['preloader_icon'] ) && $atts['preloader_icon'] 
 
 				<span class = "cwpgt-more-info-prices__old">
 					<span class = "cwp-more-info-prices__value"></span>
-					<span class = "cwp-more-info-prices__currency">
-						<?php echo $currency_icon ?>
-					</span>
 				</span>
 				<span class = "cwpgt-more-info-prices__new">
 					<span class = "cwp-more-info-prices__value"></span>
