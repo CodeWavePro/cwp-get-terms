@@ -55,5 +55,13 @@ $options = [
         'desc'          => esc_html__( 'Please choose icon for currency', 'mebel-laim' ),
         'preview_size'  => 'medium',
         'modal_size'    => 'medium'
+    ],
+
+    'preloader_icon'  => [
+        'type'          => 'icon-v2',
+        'label'         => esc_html__( 'Preloader Icon', 'mebel-laim' ),
+        'desc'          => esc_html__( 'Please choose icon for preloader', 'mebel-laim' ),
+        'preview_size'  => 'medium',
+        'modal_size'    => 'medium'
     ]
 ];

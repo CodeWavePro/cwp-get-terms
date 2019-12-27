@@ -6,10 +6,10 @@ jQuery( function( $ ) {
 	 *
 	 * @param preloaderClass - class name of preloader wrapper to remove it after loading data.
 	 */
-	function appendPreloader( preloaderClass ) {
+	function appendPreloader( preloaderClass, iconClass ) {
 		$( 'body' ).append(
 			'<div class = "' + preloaderClass + ' animated fadeIn">' +
-				'<i class = "fas fa-spinner cwpgt-product-more-info-preloader__icon"></i>' +
+				'<i class = "' + iconClass + ' cwpgt-product-more-info-preloader__icon"></i>' +
 			'</div>'
 		);
 	}
@@ -25,6 +25,7 @@ jQuery( function( $ ) {
 		var sort;	// Sorting by sorting type.
 		var minPrice, maxPrice;	// Sorting by price.
 		var paginationLink, productsTerm, productsPerPage, productsCurrentPage;	// Ajax products pagination.
+		var iconClass = $( '.term-products-wrapper' ).attr( 'data-preloader' );
 
 		/**
 		 * Product plus click.
@@ -100,7 +101,7 @@ jQuery( function( $ ) {
 				}, 1000 );
 
 				// Preloader appears.
-				appendPreloader( 'cwpgt-product-more-info-preloader' );
+				appendPreloader( 'cwpgt-product-more-info-preloader', iconClass );
 
 				productId = $( this ).attr( 'data-id' );	// Get product ID from .cwp-slide-more-info-button data-id attribute.
 				ajaxData = {
@@ -261,7 +262,7 @@ jQuery( function( $ ) {
 				$( '.cwpgt-more-info-wrapper' ).css( 'display', 'none' );	// Hide more product info wrapper.
 				$( '.cwpgt-more-info-image-wrapper' ).css( 'background-image', 'url()' );	// Remove main image from background.
 				// Clearing all HTML blocks.
-				$( '.cwpgt-more-info-item' ).html( '' );
+				$( '.cwpgt-more-info-item .cwpgt-product__value' ).html( '' );
 				$( '.cwpgt-more-info-images' ).trigger( 'destroy.owl.carousel' );	// Destroy Owl Carousel.
 			}, 1000 );
 		} );
@@ -345,7 +346,7 @@ jQuery( function( $ ) {
 				productsPerPage = parseInt( paginationLink.closest( '.fw-container' ).find( '.cwpgt-pagination' ).attr( 'data-per-page' ) );
 
 				// Preloader appears.
-				appendPreloader( 'cwpgt-product-more-info-preloader' );
+				appendPreloader( 'cwpgt-product-more-info-preloader', iconClass );
 
 				ajaxData = {	// Data for Ajax request.
 					action				: '_cwpgt_apply_filters',
@@ -435,7 +436,7 @@ jQuery( function( $ ) {
 				}
 
 				// Preloader appears.
-				appendPreloader( 'cwpgt-product-more-info-preloader' );
+				appendPreloader( 'cwpgt-product-more-info-preloader', iconClass );
 
 				ajaxData = {
 					action 					: '_cwpgt_pagination_number_click',

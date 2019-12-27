@@ -10,6 +10,9 @@ $terms = get_terms(
 		'hide_empty'	=> true 	// Do not show empty terms.
 	]
 );
+
+// Icon for preloader.
+$preloader_icon = ( isset( $atts['preloader_icon'] ) && $atts['preloader_icon'] ) ? $atts['preloader_icon']['icon-class'] : '';
 ?>
 
 <section class = "fw-main-row section-sort">
@@ -149,7 +152,7 @@ $terms = get_terms(
 		</div><!-- .fw-row -->
 
 		<div class = "fw-row">
-			<div class = "term-products-wrapper clear">
+			<div class = "term-products-wrapper clear" data-preloader = "<?php echo esc_attr( $preloader_icon ) ?>">
 				<?php
 				$products_per_page = ( isset( $atts['products_per_page'] ) && $atts['products_per_page'] ) ? $atts['products_per_page'] : 1;
 				$new_query = new WP_Query(
