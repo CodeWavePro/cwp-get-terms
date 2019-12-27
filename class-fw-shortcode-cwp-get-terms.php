@@ -321,106 +321,84 @@ class FW_Shortcode_CWP_Get_Terms extends FW_Shortcode {
 
 		// Old price.
 		if ( fw_get_db_post_option( $product_id, 'old_price' ) ) {
-			/**
-			 * RUBLE icon for currency (from Font Awesome Icons).
-			 * @link https://fontawesome.com/icons
-			 */
-			$product_price_old = number_format( fw_get_db_post_option( $product_id, 'old_price' ), 0, '.', ' ' ) . '<span class = "cwp-more-info-prices__currency"><i class = "fas fa-ruble-sign"></i></span>';
+			$product_price_old = number_format( fw_get_db_post_option( $product_id, 'old_price' ), 0, '.', ' ' );
 		}	else {
 			$product_price_old = '';
 		}
 
 		// Actual price.
 		if ( fw_get_db_post_option( $product_id, 'new_price' ) ) {
-			/**
-			 * RUBLE icon for currency (from Font Awesome Icons).
-			 * @link https://fontawesome.com/icons
-			 */
-			$product_price_new = number_format( fw_get_db_post_option( $product_id, 'new_price' ), 0, '.', ' ' ) . '<span class = "cwp-more-info-prices__currency"><i class = "fas fa-ruble-sign"></i></span>';
+			$product_price_new = number_format( fw_get_db_post_option( $product_id, 'new_price' ), 0, '.', ' ' );
 		}	else {
 			$product_price_new = '';
 		}
 
 		// Product type.
 		if ( fw_get_db_post_option( $product_id, 'product_type' ) ) {
-			/**
-			 * Here and after BULLSEYE icon to list items (from Font Awesome Icons).
-			 * @link https://fontawesome.com/icons
-			 */
-			$product_type = '<span class = "cwpgt-product__label"><i class = "fas fa-bullseye cwpgt-more-info__icon"></i>' . esc_html__( 'Тип:', 'mebel-laim' ) . '</span>' .
-							'<span class = "cwpgt-product__value">' . sprintf( esc_html__( '%s', 'mebel-laim' ), fw_get_db_post_option( $product_id, 'product_type' ) ) . '</span>';
+			$product_type = sprintf( esc_html__( '%s', 'mebel-laim' ), fw_get_db_post_option( $product_id, 'product_type' ) );
 		}	else {
 			$product_type = '';
 		}
 
 		// Product material.
 		if ( fw_get_db_post_option( $product_id, 'material' ) ) {
-			$product_material = '<span class = "cwpgt-product__label"><i class = "fas fa-bullseye cwpgt-more-info__icon"></i>' . esc_html__( 'Материал:', 'mebel-laim' ) . '</span>' .
-								'<span class = "cwpgt-product__value">' . sprintf( esc_html__( '%s', 'mebel-laim' ), fw_get_db_post_option( $product_id, 'material' ) ) . '</span>';
+			$product_material = sprintf( esc_html__( '%s', 'mebel-laim' ), fw_get_db_post_option( $product_id, 'material' ) );
 		}	else {
 			$product_material = '';
 		}
 
 		// Product width.
 		if ( fw_get_db_post_option( $product_id, 'width' ) ) {
-			$product_width = '<span class = "cwpgt-product__label"><i class = "fas fa-bullseye cwpgt-more-info__icon"></i>' . esc_html__( 'Длина:', 'mebel-laim' ) . '</span>' .
-							 '<span class = "cwpgt-product__value">' . sprintf( esc_html__( '%f', 'mebel-laim' ), fw_get_db_post_option( $product_id, 'width' ) ) . '</span>';
+			$product_width = sprintf( esc_html__( '%s', 'mebel-laim' ), fw_get_db_post_option( $product_id, 'width' ) );
 		}	else {
 			$product_width = '';
 		}
 
 		// Product height.
 		if ( fw_get_db_post_option( $product_id, 'height' ) ) {
-			$product_height = '<span class = "cwpgt-product__label"><i class = "fas fa-bullseye cwpgt-more-info__icon"></i>' . esc_html__( 'Высота:', 'mebel-laim' ) . '</span>' .
-							  '<span class = "cwpgt-product__value">' . sprintf( esc_html__( '%f', 'mebel-laim' ), fw_get_db_post_option( $product_id, 'height' ) ) . '</span>';
+			$product_height = sprintf( esc_html__( '%s', 'mebel-laim' ), fw_get_db_post_option( $product_id, 'height' ) );
 		}	else {
 			$product_height = '';
 		}
 
 		// Product depth.
 		if ( fw_get_db_post_option( $product_id, 'depth' ) ) {
-			$product_depth = '<span class = "cwpgt-product__label"><i class = "fas fa-bullseye cwpgt-more-info__icon"></i>' . esc_html__( 'Глубина:', 'mebel-laim' ) . '</span>' .
-							 '<span class = "cwpgt-product__value">' . sprintf( esc_html__( '%f', 'mebel-laim' ), fw_get_db_post_option( $product_id, 'depth' ) ) . '</span>';
+			$product_depth = sprintf( esc_html__( '%s', 'mebel-laim' ), fw_get_db_post_option( $product_id, 'depth' ) );
 		}	else {
 			$product_depth = '';
 		}
 
 		// Product more features.
 		if ( fw_get_db_post_option( $product_id, 'more_features' ) ) {
-			$product_text = '<span class = "cwpgt-product__label"><i class = "fas fa-bullseye cwpgt-more-info__icon"></i>' . esc_html__( 'Дополнительная информация:', 'mebel-laim' ) . '</span>' .
-							'<span class = "cwpgt-product__value">' . sprintf( esc_html__( '%s', 'mebel-laim' ), fw_get_db_post_option( $product_id, 'more_features' ) ) . '</span>';
+			$product_text = sprintf( esc_html__( '%s', 'mebel-laim' ), fw_get_db_post_option( $product_id, 'more_features' ) );
 		}	else {
 			$product_text = '';
 		}
 
 		// Number of products per pack.
 		if ( fw_get_db_post_option( $product_id, 'number_per_pack' ) ) {
-			$number_per_pack = '<span class = "cwpgt-product__label"><i class = "fas fa-bullseye cwpgt-more-info__icon"></i>' . esc_html__( 'Единиц товара в упаковке:', 'mebel-laim' ) . '</span>' .
-							   '<span class = "cwpgt-product__value">' . sprintf( esc_html__( '%d', 'mebel-laim' ), fw_get_db_post_option( $product_id, 'number_per_pack' ) ) . '</span>';
+			$number_per_pack = sprintf( esc_html__( '%d', 'mebel-laim' ), fw_get_db_post_option( $product_id, 'number_per_pack' ) );
 		}	else {
 			$number_per_pack = '';
 		}
 
 		// Brand name.
 		if ( fw_get_db_post_option( $product_id, 'brand_name' ) ) {
-			$brand_name = '<span class = "cwpgt-product__label"><i class = "fas fa-bullseye cwpgt-more-info__icon"></i>' . esc_html__( 'Производитель:', 'mebel-laim' ) . '</span>' .
-						  '<span class = "cwpgt-product__value">' . sprintf( esc_html__( '%s', 'mebel-laim' ), fw_get_db_post_option( $product_id, 'brand_name' ) ) . '</span>';
+			$brand_name = sprintf( esc_html__( '%s', 'mebel-laim' ), fw_get_db_post_option( $product_id, 'brand_name' ) );
 		}	else {
 			$brand_name = '';
 		}
 
 		// Country of manufacture.
 		if ( fw_get_db_post_option( $product_id, 'country_of_manufacture' ) ) {
-			$country_of_manufacture = '<span class = "cwpgt-product__label"><i class = "fas fa-bullseye cwpgt-more-info__icon"></i>' . esc_html__( 'Страна производства:', 'mebel-laim' ) . '</span>' .
-							   		  '<span class = "cwpgt-product__value">' . sprintf( esc_html__( '%s', 'mebel-laim' ), fw_get_db_post_option( $product_id, 'country_of_manufacture' ) ) . '</span>';
+			$country_of_manufacture = sprintf( esc_html__( '%s', 'mebel-laim' ), fw_get_db_post_option( $product_id, 'country_of_manufacture' ) );
 		}	else {
 			$country_of_manufacture = '';
 		}
 
 		// Guarantee.
 		if ( fw_get_db_post_option( $product_id, 'guarantee' ) ) {
-			$guarantee = '<span class = "cwpgt-product__label"><i class = "fas fa-bullseye cwpgt-more-info__icon"></i>' . esc_html__( 'Гарантия:', 'mebel-laim' ) . '</span>' .
-					     '<span class = "cwpgt-product__value">' . sprintf( esc_html__( '%s', 'mebel-laim' ), fw_get_db_post_option( $product_id, 'guarantee' ) ) . '</span>';
+			$guarantee = sprintf( esc_html__( '%s', 'mebel-laim' ), fw_get_db_post_option( $product_id, 'guarantee' ) );
 		}	else {
 			$guarantee = '';
 		}

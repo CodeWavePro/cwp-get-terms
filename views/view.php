@@ -17,11 +17,13 @@ $terms = get_terms(
 		<div class = "fw-row">
 			<div class = "fw-col-xs-12">
 				<div class = "terms-wrapper">
-					<!--
-					Icon from Font Awesome Icons.
-					@link https://fontawesome.com/icons
-					-->
-					<i class = "fas fa-stream cwpgt-icon"></i>
+					<?php
+					// Icon for taxonomy choice in sorting choices.
+					$sort_icon = ( isset( $atts['taxonomy_icon'] ) && $atts['taxonomy_icon'] ) ?
+								 '<i class = "' . esc_attr( $atts['taxonomy_icon']['icon-class'] ) . ' cwpgt-icon"></i>' :
+								 '';
+					echo $sort_icon;
+					?>
 
 					<!-- List of terms from 'products' taxonomy. -->
 					<ul class = "terms">
@@ -46,11 +48,13 @@ $terms = get_terms(
 				</div>
 
 				<div class = "sorting-wrapper">
-					<!--
-					Icon from Font Awesome Icons.
-					@link https://fontawesome.com/icons
-					-->
-					<i class = "fas fa-sort cwpgt-icon"></i>
+					<?php
+					// Icon for taxonomy choice in sorting choices.
+					$sort_icon = ( isset( $atts['sorting_icon'] ) && $atts['sorting_icon'] ) ?
+								 '<i class = "' . esc_attr( $atts['sorting_icon']['icon-class'] ) . ' cwpgt-icon"></i>' :
+								 '';
+					echo $sort_icon;
+					?>
 
 					<!-- Sorting products by. -->
 					<ul class = "sorting">
@@ -77,11 +81,13 @@ $terms = get_terms(
 				</div>
 
 				<div class = "price-sorting-wrapper">
-					<!--
-					Icon from Font Awesome Icons.
-					@link https://fontawesome.com/icons
-					-->
-					<i class = "fas fa-ruble-sign cwpgt-icon"></i>
+					<?php
+					// Icon for taxonomy choice in sorting choices.
+					$sort_icon = ( isset( $atts['price_icon'] ) && $atts['price_icon'] ) ?
+								 '<i class = "' . esc_attr( $atts['price_icon']['icon-class'] ) . ' cwpgt-icon"></i>' :
+								 '';
+					echo $sort_icon;
+					?>
 
 					<?php
 					$min_and_max_price_query = new WP_Query(
@@ -129,8 +135,13 @@ $terms = get_terms(
 						<input type = "text" class = "price-sorting__input price-sorting__input_min" value = "<?php echo esc_attr( $min_price ) ?>" data-min = "<?php echo esc_attr( $min_price ) ?>" />
 						<input type = "text" class = "price-sorting__input price-sorting__input_max" value = "<?php echo esc_attr( $max_price ) ?>" data-max = "<?php echo esc_attr( $max_price ) ?>" />
 						<span class = "cwpgt-apply-filters" title = "<?php esc_attr_e( 'Применить фильтры', 'mebel-laim' ) ?>">
-							<i class = "fas fa-filter cwpgt-icon_sort"></i>
-							<?php esc_html_e( 'Применить фильтры', 'mebel-laim' ) ?>
+							<?php
+							// Icon for taxonomy choice in sorting choices.
+							$sort_icon = ( isset( $atts['filter_icon'] ) && $atts['filter_icon'] ) ?
+										 '<i class = "' . esc_attr( $atts['filter_icon']['icon-class'] ) . ' cwpgt-icon"></i>' :
+										 '';
+							echo $sort_icon . esc_html__( 'Применить фильтры', 'mebel-laim' );
+							?>
 						</span>
 					</div>
 				</div>
@@ -304,21 +315,96 @@ $terms = get_terms(
 			<h2 class = "cwpgt-more-info__title cwpgt-vertical-line-for-header"></h2>
 
 			<div class = "cwpgt-more-info-prices">
-				<span class = "cwpgt-more-info-prices__old"></span>
-				<span class = "cwpgt-more-info-prices__new"></span>
+				<?php
+				// Icon for every specification field.
+				$currency_icon = ( isset( $atts['currency_icon'] ) && $atts['currency_icon'] ) ?
+							 '<i class = "' . esc_attr( $atts['currency_icon']['icon-class'] ) . '"></i>' :
+							 '';
+				?>
+
+				<span class = "cwpgt-more-info-prices__old">
+					<span class = "cwp-more-info-prices__value"></span>
+					<span class = "cwp-more-info-prices__currency">
+						<?php echo $currency_icon ?>
+					</span>
+				</span>
+				<span class = "cwpgt-more-info-prices__new">
+					<span class = "cwp-more-info-prices__value"></span>
+					<span class = "cwp-more-info-prices__currency">
+						<?php echo $currency_icon ?>
+					</span>
+				</span>
 			</div>
 
 			<div class = "cwpgt-more-info-item cwpgt-more-info-colors animated"></div>
-			<div class = "cwpgt-more-info-item cwpgt-more-info-type animated"></div>
-			<div class = "cwpgt-more-info-item cwpgt-more-info-material animated"></div>
-			<div class = "cwpgt-more-info-item cwpgt-more-info-width animated"></div>
-			<div class = "cwpgt-more-info-item cwpgt-more-info-height animated"></div>
-			<div class = "cwpgt-more-info-item cwpgt-more-info-depth animated"></div>
-			<div class = "cwpgt-more-info-item cwpgt-more-info-number-per-pack animated"></div>
-			<div class = "cwpgt-more-info-item cwpgt-more-info-manufacture-country animated"></div>
-			<div class = "cwpgt-more-info-item cwpgt-more-info-brand-country animated"></div>
-			<div class = "cwpgt-more-info-item cwpgt-more-info-guarantee animated"></div>
-			<div class = "cwpgt-more-info-item cwpgt-more-info-text animated"></div>
+
+			<?php
+			// Icon for every specification field.
+			$specification_icon = ( isset( $atts['specification_icon'] ) && $atts['specification_icon'] ) ?
+						 '<i class = "' . esc_attr( $atts['specification_icon']['icon-class'] ) . ' cwpgt-more-info__icon"></i>' :
+						 '';
+			?>
+
+			<div class = "cwpgt-more-info-item cwpgt-more-info-type animated">
+				<span class = "cwpgt-product__label">
+					<?php echo $specification_icon . ' ' . esc_html__( 'Тип:', 'mebel-laim' ) ?>
+				</span>
+				<span class = "cwpgt-product__value"></span>
+			</div>
+			<div class = "cwpgt-more-info-item cwpgt-more-info-material animated">
+				<span class = "cwpgt-product__label">
+					<?php echo $specification_icon . ' ' . esc_html__( 'Материал:', 'mebel-laim' ) ?>
+				</span>
+				<span class = "cwpgt-product__value"></span>
+			</div>
+			<div class = "cwpgt-more-info-item cwpgt-more-info-width animated">
+				<span class = "cwpgt-product__label">
+					<?php echo $specification_icon . ' ' . esc_html__( 'Длина:', 'mebel-laim' ) ?>
+				</span>
+				<span class = "cwpgt-product__value"></span>
+			</div>
+			<div class = "cwpgt-more-info-item cwpgt-more-info-height animated">
+				<span class = "cwpgt-product__label">
+					<?php echo $specification_icon . ' ' . esc_html__( 'Высота:', 'mebel-laim' ) ?>
+				</span>
+				<span class = "cwpgt-product__value"></span>
+			</div>
+			<div class = "cwpgt-more-info-item cwpgt-more-info-depth animated">
+				<span class = "cwpgt-product__label">
+					<?php echo $specification_icon . ' ' . esc_html__( 'Глубина:', 'mebel-laim' ) ?>
+				</span>
+				<span class = "cwpgt-product__value"></span>
+			</div>
+			<div class = "cwpgt-more-info-item cwpgt-more-info-manufacture-country animated">
+				<span class = "cwpgt-product__label">
+					<?php echo $specification_icon . ' ' . esc_html__( 'Количество в упаковке:', 'mebel-laim' ) ?>
+				</span>
+				<span class = "cwpgt-product__value"></span>
+			</div>
+			<div class = "cwpgt-more-info-item cwpgt-more-info-brand-country animated">
+				<span class = "cwpgt-product__label">
+					<?php echo $specification_icon . ' ' . esc_html__( 'Производитель:', 'mebel-laim' ) ?>
+				</span>
+				<span class = "cwpgt-product__value"></span>
+			</div>
+			<div class = "cwpgt-more-info-item cwpgt-more-info-guarantee animated">
+				<span class = "cwpgt-product__label">
+					<?php echo $specification_icon . ' ' . esc_html__( 'Страна производства:', 'mebel-laim' ) ?>
+				</span>
+				<span class = "cwpgt-product__value"></span>
+			</div>
+			<div class = "cwpgt-more-info-item cwpgt-more-info-number-per-pack animated">
+				<span class = "cwpgt-product__label">
+					<?php echo $specification_icon . ' ' . esc_html__( 'Гарантия:', 'mebel-laim' ) ?>
+				</span>
+				<span class = "cwpgt-product__value"></span>
+			</div>
+			<div class = "cwpgt-more-info-item cwpgt-more-info-text animated">
+				<span class = "cwpgt-product__label">
+					<?php echo $specification_icon . ' ' . esc_html__( 'Дополнительная информация:', 'mebel-laim' ) ?>
+				</span>
+				<span class = "cwpgt-product__value"></span>
+			</div>
 
 			<div class = "cwpgt-more-info-buttons">
 				<a class = "button cwpgt-more-info-buttons__button button_go-to-product" href = "#">
