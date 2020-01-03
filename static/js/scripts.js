@@ -373,14 +373,6 @@ jQuery( function( $ ) {
 
 					switch ( data.success ) {	// Checking ajax response.
 						case true: 	// If ajax response is success.
-							$( '.price-sorting' ).append( '<span class = "sorting-message">' + data.data.message + '</span>' );	// Show success message.
-							setTimeout(
-								function() {
-									$( '.sorting-message' ).remove();	// Remove preloader from DOM.
-								},
-								5000
-							);
-
 							if ( data.data.structure != '' ) {	// If new HTML structure is not empty.
 								paginationLink.closest( '.fw-container' ).find( '.term-products-wrapper' ).html( data.data.structure );
 							}
