@@ -6,7 +6,7 @@ if ( !defined( 'FW' ) ) {
 // Get terms by taxonomy slug.
 $terms = get_terms(
 	[
-		'taxonomy'		=> 'products',	// Taxonomy slug.
+		'taxonomy'		=> 'showcase',	// Taxonomy slug.
 		'hide_empty'	=> true 	// Do not show empty terms.
 	]
 );
@@ -28,10 +28,10 @@ $preloader_icon = ( isset( $atts['preloader_icon'] ) && $atts['preloader_icon'] 
 					echo $sort_icon;
 					?>
 
-					<!-- List of terms from 'products' taxonomy. -->
+					<!-- List of terms from 'showcase' taxonomy. -->
 					<ul class = "terms">
 						<?php
-						// Each term name from 'products' taxonomy outputing in loop.
+						// Each term name from 'showcase' taxonomy outputing in loop.
 						foreach ( $terms as $key => $term ) {
 							// If it's the first element - add active class for brand color.
 							if ( $key === 0 ) {
@@ -99,7 +99,7 @@ $preloader_icon = ( isset( $atts['preloader_icon'] ) && $atts['preloader_icon'] 
 							'post_type'			=> 'products',	// Post type.
 							'tax_query'			=> [
 								[
-									'taxonomy'	=> 'products',	// Taxonomy name.
+									'taxonomy'	=> 'showcase',	// Taxonomy name.
 									'field'		=> 'slug',	// Posts will be outputing by term slug.
 									'terms'		=> $first_term_slug	// Term slug.
 								]
@@ -161,7 +161,7 @@ $preloader_icon = ( isset( $atts['preloader_icon'] ) && $atts['preloader_icon'] 
 						'post_type'			=> 'products',	// Post type.
 						'tax_query'			=> [
 							[
-								'taxonomy'	=> 'products',	// Taxonomy name.
+								'taxonomy'	=> 'showcase',	// Taxonomy name.
 								'field'		=> 'slug',	// Posts will be outputing by term slug.
 								'terms'		=> $first_term_slug	// Term slug.
 							]
@@ -209,13 +209,13 @@ $preloader_icon = ( isset( $atts['preloader_icon'] ) && $atts['preloader_icon'] 
 								<div class = "cwpgt-product-term">
 									<?php
 						 			// Getting all terms of current product in taxonomy "products".
-						 			$terms = wp_get_post_terms( $id, 'products' );
+						 			$terms = wp_get_post_terms( $id, 'showcase' );
 
 						 			// Searching if one of terms has no child terms - this is the lowest term, we need it.
 						 			foreach ( $terms as $term ) {
-						 				if ( count( get_term_children( $term->term_id, 'products' ) ) === 0 ) {
+						 				if ( count( get_term_children( $term->term_id, 'showcase' ) ) === 0 ) {
 						 					?>
-						 					<a class = "cwpgt-product-term__link" href = "<?php echo esc_url( get_term_link( $term->term_id, 'products' ) ) ?>">
+						 					<a class = "cwpgt-product-term__link" href = "<?php echo esc_url( get_term_link( $term->term_id, 'showcase' ) ) ?>">
 						 						<?php printf( esc_html__('%s', 'mebel-laim'), $term->name ) ?>
 						 					</a>
 						 					<?php

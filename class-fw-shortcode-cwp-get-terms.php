@@ -28,7 +28,7 @@ class FW_Shortcode_CWP_Get_Terms extends FW_Shortcode {
 						'offset'			=> $offset,
 						'tax_query'			=> [
 							[
-								'taxonomy'	=> 'products',	// Taxonomy name.
+								'taxonomy'	=> 'showcase',	// Taxonomy name.
 								'field'		=> 'slug',	// Posts will be outputing by term slug.
 								'terms'		=> $new_term	// Term slug.
 							]
@@ -55,7 +55,7 @@ class FW_Shortcode_CWP_Get_Terms extends FW_Shortcode {
 						'offset'			=> $offset,
 						'tax_query'			=> [
 							[
-								'taxonomy'	=> 'products',	// Taxonomy name.
+								'taxonomy'	=> 'showcase',	// Taxonomy name.
 								'field'		=> 'slug',	// Posts will be outputing by term slug.
 								'terms'		=> $new_term	// Term slug.
 							]
@@ -82,7 +82,7 @@ class FW_Shortcode_CWP_Get_Terms extends FW_Shortcode {
 						'offset'			=> $offset,
 						'tax_query'			=> array(
 							array(
-								'taxonomy'	=> 'products',	// Taxonomy name.
+								'taxonomy'	=> 'showcase',	// Taxonomy name.
 								'field'		=> 'slug',	// Posts will be outputing by term slug.
 								'terms'		=> $new_term	// Term slug.
 							)
@@ -110,7 +110,7 @@ class FW_Shortcode_CWP_Get_Terms extends FW_Shortcode {
 						'offset'			=> $offset,
 						'tax_query'			=> array(
 							array(
-								'taxonomy'	=> 'products',	// Taxonomy name.
+								'taxonomy'	=> 'showcase',	// Taxonomy name.
 								'field'		=> 'slug',	// Posts will be outputing by term slug.
 								'terms'		=> $new_term	// Term slug.
 							)
@@ -138,7 +138,7 @@ class FW_Shortcode_CWP_Get_Terms extends FW_Shortcode {
 						'offset'			=> $offset,
 						'tax_query'			=> [
 							[
-								'taxonomy'	=> 'products',	// Taxonomy name.
+								'taxonomy'	=> 'showcase',	// Taxonomy name.
 								'field'		=> 'slug',	// Posts will be outputing by term slug.
 								'terms'		=> $new_term	// Term slug.
 							]
@@ -165,7 +165,7 @@ class FW_Shortcode_CWP_Get_Terms extends FW_Shortcode {
 						'offset'			=> $offset,
 						'tax_query'			=> [
 							[
-								'taxonomy'	=> 'products',	// Taxonomy name.
+								'taxonomy'	=> 'showcase',	// Taxonomy name.
 								'field'		=> 'slug',	// Posts will be outputing by term slug.
 								'terms'		=> $new_term	// Term slug.
 							]
@@ -192,7 +192,7 @@ class FW_Shortcode_CWP_Get_Terms extends FW_Shortcode {
 						'offset'			=> $offset,
 						'tax_query'			=> [
 							[
-								'taxonomy'	=> 'products',	// Taxonomy name.
+								'taxonomy'	=> 'showcase',	// Taxonomy name.
 								'field'		=> 'slug',	// Posts will be outputing by term slug.
 								'terms'		=> $new_term	// Term slug.
 							]
@@ -516,12 +516,12 @@ class FW_Shortcode_CWP_Get_Terms extends FW_Shortcode {
 
 							<div class = "cwpgt-product-term">';
 					 			// Getting all terms of current product in taxonomy "products".
-					 			$terms = wp_get_post_terms( $id, 'products' );
+					 			$terms = wp_get_post_terms( $id, 'showcase' );
 
 					 			// Searching if one of terms has no child terms - this is the lowest term, we need it.
 					 			foreach ( $terms as $term ) {
-					 				if ( count( get_term_children( $term->term_id, 'products' ) ) === 0 ) {
-					 					$new_structure .= '<a class = "cwpgt-product-term__link" href = "' . esc_url( get_term_link( $term->term_id, 'products' ) ) . '">' . sprintf( esc_html__( '%s', 'mebel-laim' ), $term->name ) . '</a>';
+					 				if ( count( get_term_children( $term->term_id, 'showcase' ) ) === 0 ) {
+					 					$new_structure .= '<a class = "cwpgt-product-term__link" href = "' . esc_url( get_term_link( $term->term_id, 'showcase' ) ) . '">' . sprintf( esc_html__( '%s', 'mebel-laim' ), $term->name ) . '</a>';
 					 					break;
 					 				}
 					 			}
@@ -664,7 +664,7 @@ class FW_Shortcode_CWP_Get_Terms extends FW_Shortcode {
 		}
 
 		// Finding maximum page count for this slug and parameters.
-		$term_info = get_term_by( 'slug', $products_term, 'products' ); // Current term info.
+		$term_info = get_term_by( 'slug', $products_term, 'showcase' ); // Current term info.
 		$term_products_count = $term_info->count;	// Products count in it.
 
 		// Products offset count formula.
@@ -720,13 +720,13 @@ class FW_Shortcode_CWP_Get_Terms extends FW_Shortcode {
 							</div>
 
 							<div class = "cwpgt-product-term">';
-					 			// Getting all terms of current product in taxonomy "products".
-					 			$terms = wp_get_post_terms( $id, 'products' );
+					 			// Getting all terms of current product in taxonomy "showcase".
+					 			$terms = wp_get_post_terms( $id, 'showcase' );
 
 					 			// Searching if one of terms has no child terms - this is the lowest term, we need it.
 					 			foreach ( $terms as $term ) {
-					 				if ( count( get_term_children( $term->term_id, 'products' ) ) === 0 ) {
-					 					$output .= '<a class = "cwpgt-product-term__link" href = "' . esc_url( get_term_link( $term->term_id, 'products' ) ) . '">' . sprintf( esc_html__( '%s', 'mebel-laim' ), $term->name ) . '</a>';
+					 				if ( count( get_term_children( $term->term_id, 'showcase' ) ) === 0 ) {
+					 					$output .= '<a class = "cwpgt-product-term__link" href = "' . esc_url( get_term_link( $term->term_id, 'showcase' ) ) . '">' . sprintf( esc_html__( '%s', 'mebel-laim' ), $term->name ) . '</a>';
 					 					break;
 					 				}
 					 			}
