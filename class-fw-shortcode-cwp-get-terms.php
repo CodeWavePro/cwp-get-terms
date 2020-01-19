@@ -2,7 +2,10 @@
 	die( 'Forbidden' );
 }
 
-class FW_Shortcode_CWP_Get_Terms extends FW_Shortcode {
+class FW_Shortcode_CWP_Get_Terms extends FW_Shortcode
+{
+	private $taxonomy = 'showcase';
+
 	public function _init() {
         $this->register_ajax();
     }
@@ -28,7 +31,7 @@ class FW_Shortcode_CWP_Get_Terms extends FW_Shortcode {
 						'offset'			=> $offset,
 						'tax_query'			=> [
 							[
-								'taxonomy'	=> 'showcase',	// Taxonomy name.
+								'taxonomy'	=> $this->taxonomy,	// Taxonomy name.
 								'field'		=> 'slug',	// Posts will be outputing by term slug.
 								'terms'		=> $new_term	// Term slug.
 							]
@@ -55,7 +58,7 @@ class FW_Shortcode_CWP_Get_Terms extends FW_Shortcode {
 						'offset'			=> $offset,
 						'tax_query'			=> [
 							[
-								'taxonomy'	=> 'showcase',	// Taxonomy name.
+								'taxonomy'	=> $this->taxonomy,	// Taxonomy name.
 								'field'		=> 'slug',	// Posts will be outputing by term slug.
 								'terms'		=> $new_term	// Term slug.
 							]
@@ -82,7 +85,7 @@ class FW_Shortcode_CWP_Get_Terms extends FW_Shortcode {
 						'offset'			=> $offset,
 						'tax_query'			=> array(
 							array(
-								'taxonomy'	=> 'showcase',	// Taxonomy name.
+								'taxonomy'	=> $this->taxonomy,	// Taxonomy name.
 								'field'		=> 'slug',	// Posts will be outputing by term slug.
 								'terms'		=> $new_term	// Term slug.
 							)
@@ -110,7 +113,7 @@ class FW_Shortcode_CWP_Get_Terms extends FW_Shortcode {
 						'offset'			=> $offset,
 						'tax_query'			=> array(
 							array(
-								'taxonomy'	=> 'showcase',	// Taxonomy name.
+								'taxonomy'	=> $this->taxonomy,	// Taxonomy name.
 								'field'		=> 'slug',	// Posts will be outputing by term slug.
 								'terms'		=> $new_term	// Term slug.
 							)
@@ -138,7 +141,7 @@ class FW_Shortcode_CWP_Get_Terms extends FW_Shortcode {
 						'offset'			=> $offset,
 						'tax_query'			=> [
 							[
-								'taxonomy'	=> 'showcase',	// Taxonomy name.
+								'taxonomy'	=> $this->taxonomy,	// Taxonomy name.
 								'field'		=> 'slug',	// Posts will be outputing by term slug.
 								'terms'		=> $new_term	// Term slug.
 							]
@@ -165,7 +168,7 @@ class FW_Shortcode_CWP_Get_Terms extends FW_Shortcode {
 						'offset'			=> $offset,
 						'tax_query'			=> [
 							[
-								'taxonomy'	=> 'showcase',	// Taxonomy name.
+								'taxonomy'	=> $this->taxonomy,	// Taxonomy name.
 								'field'		=> 'slug',	// Posts will be outputing by term slug.
 								'terms'		=> $new_term	// Term slug.
 							]
@@ -192,7 +195,7 @@ class FW_Shortcode_CWP_Get_Terms extends FW_Shortcode {
 						'offset'			=> $offset,
 						'tax_query'			=> [
 							[
-								'taxonomy'	=> 'showcase',	// Taxonomy name.
+								'taxonomy'	=> $this->taxonomy,	// Taxonomy name.
 								'field'		=> 'slug',	// Posts will be outputing by term slug.
 								'terms'		=> $new_term	// Term slug.
 							]
@@ -219,219 +222,19 @@ class FW_Shortcode_CWP_Get_Terms extends FW_Shortcode {
      * Register Ajax functions.
      */
     private function register_ajax() {
-    	// Show more product info.
-        add_action( 'wp_ajax__cwpgt_show_more', array( $this, '_cwpgt_show_more' ) );
-		add_action( 'wp_ajax_nopriv__cwpgt_show_more', array( $this, '_cwpgt_show_more' ) );
-
 		// Change sorting type.
-		add_action( 'wp_ajax__cwpgt_apply_filters', array( $this, '_cwpgt_apply_filters' ) );
-		add_action( 'wp_ajax_nopriv__cwpgt_apply_filters', array( $this, '_cwpgt_apply_filters' ) );
+		add_action( 'wp_ajax__apply_filters', array( $this, '_apply_filters' ) );
+		add_action( 'wp_ajax_nopriv__apply_filters', array( $this, '_apply_filters' ) );
 
 		// Pagination page numbers clicks.
-		add_action( 'wp_ajax__cwpgt_pagination_number_click', array( $this, '_cwpgt_pagination_number_click' ) );
-		add_action( 'wp_ajax_nopriv__cwpgt_pagination_number_click', array( $this, '_cwpgt_pagination_number_click' ) );
-    }
-
-    /**
-	 * Show product more info fields in Products Slider.
-	 */
-    public function _cwpgt_show_more() {
-    	$product_id = $_POST['product_id'];	// Getting product id.
-
-		if ( !is_numeric( $product_id ) ) {	// If product id is not numeric.
-			wp_send_json_error(	// Sending error message and exiting function.
-				array(
-					'message'	=> __( 'Неверный формат данных. ID товара не является числом.', 'mebel-laim' )
-				)
-			);
-		}
-
-		/**
-		 * Prepairing all existing product fields for sending.
-		 *
-		 * Product title.
-		 */
-		$product_title = get_the_title( $product_id );
-
-		// If product has thumbnail.
-		if ( has_post_thumbnail( $product_id ) ) {
-			// Array for product images, CSS-animation for appearing.
-			$more_product_images_array = '
-				<div class = "cwpgt-more-info-image cwpgt-more-info-image_active animated fadeInUp"
-					 style = "background-image: url(' . esc_url( get_the_post_thumbnail_url( $product_id, 'full' ) ) . ');
-					 		  animation-delay: 100ms"
-					 data-src = "' . esc_url( get_the_post_thumbnail_url( $product_id, 'full' ) ) . '">
-				</div>';
-			// Full size product thumbnail.
-			$product_image = get_the_post_thumbnail_url( $product_id, 'full' );
-		}	else {
-			$product_image = '';
-		}
-
-		// More product images with CSS-animation for their appearing.
-		if ( fw_get_db_post_option( $product_id, 'images' ) ) {
-			foreach ( fw_get_db_post_option( $product_id, 'images' ) as $key => $image ) {
-				$more_product_images_array .=  '
-					<div class = "cwpgt-more-info-image animated fadeInUp"
-						 style = "background-image: url(' . esc_url( $image['image']['url'] ) . ');
-						 		  animation-delay: ' . ( 100 * ( $key + 2 ) ) . 'ms"
-						 data-src = "' . esc_url( $image['image']['url'] ) . '">
-					</div>';
-			}
-		}
-
-		// If product has colors.
-		if ( fw_get_db_post_option( $product_id, 'colors' ) ) {
-			// Empty list for all colors of current product.
-			$product_colors_array = '<ul class = "cwpgt-more-info-colors-list">';
-
-			foreach ( fw_get_db_post_option( $product_id, 'colors' ) as $key => $color ) {
-				// Colors list item tag open. Add active class if it's the first item.
-				if ( $key === 0 ) {
-					$product_colors_array .= '<li class = "cwpgt-more-info-colors-item cwpgt-more-info-colors-item_active">';
-				}	else {
-					$product_colors_array .= '<li class = "cwpgt-more-info-colors-item">';
-				}
-
-				// If color has name.
-				if ( isset( $color['color_name'] ) ) {
-					$product_colors_array .= '<span class = "cwpgt-more-info-colors-item__title">' . sprintf( esc_html__( '%s', 'mebel-laim' ), $color['color_name'] ) . '</span>';
-				}
-
-				// If color type is chosen.
-				if ( isset( $color['color_type'] ) ) {
-					switch ( $color['color_type']['color_type_select'] ) {
-						case 'color_pallete':	// If color is chosen as pallete.
-							$product_colors_array .= '<span class = "cwpgt-more-info-colors-item__color" style = "background-color: ' . esc_attr( $color['color_type']['color_pallete']['if_color_pallete'] ) . '"></span>';
-							break;
-
-						case 'image_upload':	// If color is chosen as image.
-							$product_colors_array .= '<span class = "cwpgt-more-info-colors-item__color" style = "background-image: url(' . esc_url( $color['color_type']['image_upload']['if_image_upload']['url'] ) . ')"></span>';
-							break;
-						
-						default:
-							$product_colors_array .= esc_html__( 'No colors chosen.', 'mebel-laim' );
-							break;
-					}
-				}
-				$product_colors_array .= '</li>';	// Close HTML list item tag.
-			}
-			$product_colors_array .= '</ul>';	// Close HTML list tag.
-		}
-
-		// Old price.
-		if ( fw_get_db_post_option( $product_id, 'old_price' ) ) {
-			$product_price_old = number_format( fw_get_db_post_option( $product_id, 'old_price' ), 0, '.', ' ' );
-		}	else {
-			$product_price_old = '';
-		}
-
-		// Actual price.
-		if ( fw_get_db_post_option( $product_id, 'new_price' ) ) {
-			$product_price_new = number_format( fw_get_db_post_option( $product_id, 'new_price' ), 0, '.', ' ' );
-		}	else {
-			$product_price_new = '';
-		}
-
-		// Product type.
-		if ( fw_get_db_post_option( $product_id, 'product_type' ) ) {
-			$product_type = sprintf( esc_html__( '%s', 'mebel-laim' ), fw_get_db_post_option( $product_id, 'product_type' ) );
-		}	else {
-			$product_type = '';
-		}
-
-		// Product material.
-		if ( fw_get_db_post_option( $product_id, 'material' ) ) {
-			$product_material = sprintf( esc_html__( '%s', 'mebel-laim' ), fw_get_db_post_option( $product_id, 'material' ) );
-		}	else {
-			$product_material = '';
-		}
-
-		// Product width.
-		if ( fw_get_db_post_option( $product_id, 'width' ) ) {
-			$product_width = sprintf( esc_html__( '%s', 'mebel-laim' ), fw_get_db_post_option( $product_id, 'width' ) );
-		}	else {
-			$product_width = '';
-		}
-
-		// Product height.
-		if ( fw_get_db_post_option( $product_id, 'height' ) ) {
-			$product_height = sprintf( esc_html__( '%s', 'mebel-laim' ), fw_get_db_post_option( $product_id, 'height' ) );
-		}	else {
-			$product_height = '';
-		}
-
-		// Product depth.
-		if ( fw_get_db_post_option( $product_id, 'depth' ) ) {
-			$product_depth = sprintf( esc_html__( '%s', 'mebel-laim' ), fw_get_db_post_option( $product_id, 'depth' ) );
-		}	else {
-			$product_depth = '';
-		}
-
-		// Product more features.
-		if ( fw_get_db_post_option( $product_id, 'more_features' ) ) {
-			$product_text = sprintf( esc_html__( '%s', 'mebel-laim' ), fw_get_db_post_option( $product_id, 'more_features' ) );
-		}	else {
-			$product_text = '';
-		}
-
-		// Number of products per pack.
-		if ( fw_get_db_post_option( $product_id, 'number_per_pack' ) ) {
-			$number_per_pack = sprintf( esc_html__( '%d', 'mebel-laim' ), fw_get_db_post_option( $product_id, 'number_per_pack' ) );
-		}	else {
-			$number_per_pack = '';
-		}
-
-		// Brand name.
-		if ( fw_get_db_post_option( $product_id, 'brand_name' ) ) {
-			$brand_name = sprintf( esc_html__( '%s', 'mebel-laim' ), fw_get_db_post_option( $product_id, 'brand_name' ) );
-		}	else {
-			$brand_name = '';
-		}
-
-		// Country of manufacture.
-		if ( fw_get_db_post_option( $product_id, 'country_of_manufacture' ) ) {
-			$country_of_manufacture = sprintf( esc_html__( '%s', 'mebel-laim' ), fw_get_db_post_option( $product_id, 'country_of_manufacture' ) );
-		}	else {
-			$country_of_manufacture = '';
-		}
-
-		// Guarantee.
-		if ( fw_get_db_post_option( $product_id, 'guarantee' ) ) {
-			$guarantee = sprintf( esc_html__( '%s', 'mebel-laim' ), fw_get_db_post_option( $product_id, 'guarantee' ) );
-		}	else {
-			$guarantee = '';
-		}
-
-		// Success ajax message.
-		wp_send_json_success(
-			array(
-				'product'		=> get_the_permalink( $product_id ),
-				'title'			=> $product_title,
-				'thumbnail' 	=> $product_image,
-				'more_images'	=> $more_product_images_array,
-				'colors'		=> $product_colors_array,
-				'old_price' 	=> $product_price_old,
-				'new_price' 	=> $product_price_new,
-				'type'			=> $product_type,
-				'material'		=> $product_material,
-				'width'			=> $product_width,
-				'height'		=> $product_height,
-				'depth'			=> $product_depth,
-				'text'			=> $product_text,
-				'per_pack'		=> $number_per_pack,
-				'brand'			=> $brand_name,
-				'manufacture'	=> $country_of_manufacture,
-				'guarantee'		=> $guarantee,
-				'message'		=> __( 'Дополнительные данные товара успешно получены.', 'mebel-laim' )
-			)
-		);
+		add_action( 'wp_ajax__pagination_number_click', array( $this, '_pagination_number_click' ) );
+		add_action( 'wp_ajax_nopriv__pagination_number_click', array( $this, '_pagination_number_click' ) );
     }
 
     /**
 	 * Change sorting type.
 	 */
-    public function _cwpgt_apply_filters() {
+    public function _apply_filters() {
     	$products_per_page = $this->clean_value( $_POST['products_per_page'] );	// Getting products per page count.
     	$new_term = $this->clean_value( $_POST['term'] );	// Getting new term.
     	$new_sort = $this->clean_value( $_POST['sort'] );	// Getting new sorting type.
@@ -444,7 +247,7 @@ class FW_Shortcode_CWP_Get_Terms extends FW_Shortcode {
 			 empty( $max_sort ) ) {	// If some param or sorting type is empty.
 			wp_send_json_error(	// Sending error message and exiting function.
 				array(
-					'message'	=> __( 'Нужные данные не переданы.', 'mebel-laim' )
+					'message'	=> esc_html__( 'Нужные данные не переданы.', 'mebel-laim' )
 				)
 			);
 		}
@@ -453,7 +256,7 @@ class FW_Shortcode_CWP_Get_Terms extends FW_Shortcode {
 			 !is_numeric( $max_sort ) ) {	// If min or max price is not numeric.
 			wp_send_json_error(	// Sending error message and exiting function.
 				array(
-					'message'	=> __( 'Цена не является числом.', 'mebel-laim' )
+					'message'	=> esc_html__( 'Цена не является числом.', 'mebel-laim' )
 				)
 			);
 		}
@@ -463,7 +266,7 @@ class FW_Shortcode_CWP_Get_Terms extends FW_Shortcode {
 			 ( $max_sort < 0 ) ) {	// If min price larger than max price.
 			wp_send_json_error(	// Sending error message and exiting function.
 				array(
-					'message'	=> __( 'Проверьте правильность введенного диапазона цен.', 'mebel-laim' )
+					'message'	=> esc_html__( 'Проверьте правильность введенного диапазона цен.', 'mebel-laim' )
 				)
 			);
 		}
@@ -483,15 +286,15 @@ class FW_Shortcode_CWP_Get_Terms extends FW_Shortcode {
 				$id = get_the_ID();
 				$new_structure .= '
 					<div class = "fw-col-md-3 fw-col-sm-4">
-						<div class = "cwpgt-product">
-							<div class = "cwpgt-product-image" style = "background-image: url(' . esc_attr( get_the_post_thumbnail_url( $id, 'medium' ) ) . ')">
+						<div class = "product">
+							<div class = "product-image" style = "background-image: url(' . esc_attr( get_the_post_thumbnail_url( $id, 'medium' ) ) . ')">
 								<!-- Overlays are showing when PLUS icon is clicked. -->
-								<div class = "cwpgt-button-overlay-before_brand"></div>
-								<div class = "cwpgt-button-overlay-before"></div>
+								<div class = "button-overlay-before_brand"></div>
+								<div class = "button-overlay-before"></div>
 
 								<!-- Buttons are showing when PLUS icon is clicked. -->
-								<div class = "cwpgt-button-overlay animated">
-									<a class = "button cwpgt-more-info-button animated" href = "#" data-id = "' . esc_attr( $id ) . '">' .
+								<div class = "button-overlay animated">
+									<a class = "button more-info-button animated" href = "#" data-id = "' . esc_attr( $id ) . '">' .
 										esc_html__( 'Больше информации', 'mebel-laim' ) .
 									'</a>
 									<a class = "button animated" href = "#" style = "animation-delay: 150ms">' .
@@ -506,54 +309,54 @@ class FW_Shortcode_CWP_Get_Terms extends FW_Shortcode {
 								</div>
 
 								<!-- PLUS icon. -->
-								<a href = "#" class = "cwpgt-product-actions" title = "' . esc_html__( 'Действия', 'mebel-laim' ) . '" data-clicked = "0">
+								<a href = "#" class = "product-actions" title = "' . esc_html__( 'Действия', 'mebel-laim' ) . '" data-clicked = "0">
 									<!-- Horizontal line. -->
-					 				<span class = "cwpgt-product-actions__line"></span>
+					 				<span class = "product-actions__line"></span>
 					 				<!-- Vertical line. -->
-					 				<span class = "cwpgt-product-actions__line cwpgt-product-actions__line_cross"></span>
+					 				<span class = "product-actions__line product-actions__line_cross"></span>
 					 			</a>
-							</div><!-- .cwpgt-product-image -->
+							</div><!-- .product-image -->
 
-							<div class = "cwpgt-product-term">';
+							<div class = "product-term">';
 					 			// Getting all terms of current product in taxonomy "products".
-					 			$terms = wp_get_post_terms( $id, 'showcase' );
+					 			$terms = wp_get_post_terms( $id, $this->taxonomy );
 
 					 			// Searching if one of terms has no child terms - this is the lowest term, we need it.
 					 			foreach ( $terms as $term ) {
-					 				if ( count( get_term_children( $term->term_id, 'showcase' ) ) === 0 ) {
-					 					$new_structure .= '<a class = "cwpgt-product-term__link" href = "' . esc_url( get_term_link( $term->term_id, 'showcase' ) ) . '">' . sprintf( esc_html__( '%s', 'mebel-laim' ), $term->name ) . '</a>';
+					 				if ( count( get_term_children( $term->term_id, $this->taxonomy ) ) === 0 ) {
+					 					$new_structure .= '<a class = "product-term__link" href = "' . esc_url( get_term_link( $term->term_id, $this->taxonomy ) ) . '">' . sprintf( esc_html__( '%s', 'mebel-laim' ), $term->name ) . '</a>';
 					 					break;
 					 				}
 					 			}
 					 		$new_structure .= '</div><!-- .cwp-slide-term -->
 
-							<div class = "cwpgt-product-info">
-								<div class = "cwpgt-product-title">
-						 			<h3 class = "cwpgt-product-text__header">' .
+							<div class = "product-info">
+								<div class = "product-title">
+						 			<h3 class = "product-text__header">' .
 						 				get_the_title() .
 						 			'</h3>
 						 		</div>
 
-						 		<div class = "cwpgt-product-price">';
+						 		<div class = "product-price">';
 					 				/**
 					 				 * If product new price is not empty.
 					 				 * 
 					 				 * @ Product -> Prices -> New Price.
 					 				 */
 						 			if ( fw_get_db_post_option( $id, 'new_price' ) ) {
-						 				$new_structure .= '<span class = "cwpgt-product-price__new">' .
+						 				$new_structure .= '<span class = "product-price__new">' .
 						 					number_format( fw_get_db_post_option( $id, 'new_price' ), 0, '.', ' ' ) . '
 						 					<!--
 						 					RUBLE icon for currency (from Font Awesome Icons).
 						 					@link https://fontawesome.com/icons
 						 					-->
-						 					<span class = "cwpgt-product-price__currency"><i class = "fas fa-ruble-sign"></i></span>
+						 					<span class = "product-price__currency"><i class = "fas fa-ruble-sign"></i></span>
 						 				</span>';
 						 			}
 						 			$new_structure .= '
-						 		</div><!-- .cwpgt-product-price -->
-							</div><!-- .cwpgt-product-info -->
-						</div><!-- .cwpgt-product -->
+						 		</div><!-- .product-price -->
+							</div><!-- .product-info -->
+						</div><!-- .product -->
 					</div><!-- .fw-col-md-3 -->
 				';
 			endwhile;
@@ -563,9 +366,9 @@ class FW_Shortcode_CWP_Get_Terms extends FW_Shortcode {
 
 		if ( $new_query->max_num_pages > 1 ) {
 			$paginate_links = '
-				<a href = "#" class = "page-numbers cwpgt-pagination__previous">
-					<span class = "cwpgt-product-actions__line"></span>
-					<span class = "cwpgt-product-actions__line cwpgt-product-actions__line_cross"></span>
+				<a href = "#" class = "page-numbers prev">
+					<span class = "product-actions__line"></span>
+					<span class = "product-actions__line product-actions__line_cross"></span>
 				</a>' .
 				paginate_links(
 		        	array(
@@ -582,9 +385,9 @@ class FW_Shortcode_CWP_Get_Terms extends FW_Shortcode {
 			            'add_fragment' => ''
 		        	)
 		        ) .
-		        '<a href = "#" class = "page-numbers cwpgt-pagination__next">
-					<span class = "cwpgt-product-actions__line"></span>
-					<span class = "cwpgt-product-actions__line cwpgt-product-actions__line_cross"></span>
+		        '<a href = "#" class = "page-numbers next">
+					<span class = "product-actions__line"></span>
+					<span class = "product-actions__line product-actions__line_cross"></span>
 				</a>';
 		}
 		wp_reset_query();	// Clearing query ($new_query) for correct work of other loops.
@@ -601,7 +404,7 @@ class FW_Shortcode_CWP_Get_Terms extends FW_Shortcode {
     /**
 	 * Pagination page numbers clicks.
 	 */
-    public function _cwpgt_pagination_number_click() {
+    public function _pagination_number_click() {
     	$products_term = $this->clean_value( $_POST['products_term'] );	// Getting products current term.
     	$products_per_page = $this->clean_value( $_POST['products_per_page'] );	// Getting products per page count.
     	$products_current_page = $this->clean_value( $_POST['products_current_page'] );	// Getting current pagination page.
@@ -664,7 +467,7 @@ class FW_Shortcode_CWP_Get_Terms extends FW_Shortcode {
 		}
 
 		// Finding maximum page count for this slug and parameters.
-		$term_info = get_term_by( 'slug', $products_term, 'showcase' ); // Current term info.
+		$term_info = get_term_by( 'slug', $products_term, $this->taxonomy ); // Current term info.
 		$term_products_count = $term_info->count;	// Products count in it.
 
 		// Products offset count formula.
@@ -693,13 +496,13 @@ class FW_Shortcode_CWP_Get_Terms extends FW_Shortcode {
 				$id = get_the_ID();
 				$output .= '
 					<div class = "fw-col-md-3 fw-col-sm-4">
-						<div class = "cwpgt-product">
-							<div class = "cwpgt-product-image" style = "background-image: url(' . esc_url( get_the_post_thumbnail_url( $id, 'medium' ) ) . ')">
-								<div class = "cwpgt-button-overlay-before_brand"></div>
-								<div class = "cwpgt-button-overlay-before"></div>
+						<div class = "product">
+							<div class = "product-image" style = "background-image: url(' . esc_url( get_the_post_thumbnail_url( $id, 'medium' ) ) . ')">
+								<div class = "button-overlay-before_brand"></div>
+								<div class = "button-overlay-before"></div>
 
-								<div class = "cwpgt-button-overlay animated">
-									<a class = "button cwpgt-more-info-button animated" href = "#" data-id = "' . esc_attr( $id ) . '">' .
+								<div class = "button-overlay animated">
+									<a class = "button more-info-button animated" href = "#" data-id = "' . esc_attr( $id ) . '">' .
 										esc_html__( 'Больше информации', 'mebel-laim' ) .
 									'</a>
 									<a class = "button animated" href = "#" style = "animation-delay: 150ms">' .
@@ -713,42 +516,42 @@ class FW_Shortcode_CWP_Get_Terms extends FW_Shortcode {
 									'</a>
 								</div>
 
-								<a href = "#" class = "cwpgt-product-actions" title = "' . esc_html__( 'Действия', 'mebel-laim' ) . '" data-clicked = "0">
-					 				<span class = "cwpgt-product-actions__line"></span>
-					 				<span class = "cwpgt-product-actions__line cwpgt-product-actions__line_cross"></span>
+								<a href = "#" class = "product-actions" title = "' . esc_html__( 'Действия', 'mebel-laim' ) . '" data-clicked = "0">
+					 				<span class = "product-actions__line"></span>
+					 				<span class = "product-actions__line product-actions__line_cross"></span>
 					 			</a>
 							</div>
 
-							<div class = "cwpgt-product-term">';
+							<div class = "product-term">';
 					 			// Getting all terms of current product in taxonomy "showcase".
-					 			$terms = wp_get_post_terms( $id, 'showcase' );
+					 			$terms = wp_get_post_terms( $id, $this->taxonomy );
 
 					 			// Searching if one of terms has no child terms - this is the lowest term, we need it.
 					 			foreach ( $terms as $term ) {
-					 				if ( count( get_term_children( $term->term_id, 'showcase' ) ) === 0 ) {
-					 					$output .= '<a class = "cwpgt-product-term__link" href = "' . esc_url( get_term_link( $term->term_id, 'showcase' ) ) . '">' . sprintf( esc_html__( '%s', 'mebel-laim' ), $term->name ) . '</a>';
+					 				if ( count( get_term_children( $term->term_id, $this->taxonomy ) ) === 0 ) {
+					 					$output .= '<a class = "product-term__link" href = "' . esc_url( get_term_link( $term->term_id, $this->taxonomy ) ) . '">' . sprintf( esc_html__( '%s', 'mebel-laim' ), $term->name ) . '</a>';
 					 					break;
 					 				}
 					 			}
 					 		$output .= '</div>
 
-							<div class = "cwpgt-product-info">
-								<div class = "cwpgt-product-title">
-						 			<h3 class = "cwpgt-product-text__header">' .
+							<div class = "product-info">
+								<div class = "product-title">
+						 			<h3 class = "product-text__header">' .
 						 				get_the_title( $id ) . '
 						 			</h3>
 						 		</div>
 
-						 		<div class = "cwpgt-product-price">';
+						 		<div class = "product-price">';
 					 				/**
 					 				 * If product new price is not empty.
 					 				 * 
 					 				 * @ Product -> Prices -> New Price.
 					 				 */
 						 			if ( fw_get_db_post_option( $id, 'new_price' ) ) {
-						 				$output .= '<span class = "cwpgt-product-price__new">' .
+						 				$output .= '<span class = "product-price__new">' .
 						 					number_format( fw_get_db_post_option( $id, 'new_price' ), 0, '.', ' ' ) .
-						 					'<span class = "cwpgt-product-price__currency"><i class = "fas fa-ruble-sign"></i></span>
+						 					'<span class = "product-price__currency"><i class = "fas fa-ruble-sign"></i></span>
 						 				</span>';
 						 			}
 						 		$output .= '</div>
@@ -762,9 +565,9 @@ class FW_Shortcode_CWP_Get_Terms extends FW_Shortcode {
 
 		if ( $new_query->max_num_pages > 1 ) {
 			$paginate_links = '
-				<a href = "#" class = "page-numbers cwpgt-pagination__previous">
-					<span class = "cwpgt-product-actions__line"></span>
-					<span class = "cwpgt-product-actions__line cwpgt-product-actions__line_cross"></span>
+				<a href = "#" class = "page-numbers prev">
+					<span class = "product-actions__line"></span>
+					<span class = "product-actions__line product-actions__line_cross"></span>
 				</a>' .
 				paginate_links(
 		        	array(
@@ -781,9 +584,9 @@ class FW_Shortcode_CWP_Get_Terms extends FW_Shortcode {
 			            'add_fragment' => ''
 		        	)
 		        ) .
-		        '<a href = "#" class = "page-numbers cwpgt-pagination__next">
-					<span class = "cwpgt-product-actions__line"></span>
-					<span class = "cwpgt-product-actions__line cwpgt-product-actions__line_cross"></span>
+		        '<a href = "#" class = "page-numbers next">
+					<span class = "product-actions__line"></span>
+					<span class = "product-actions__line product-actions__line_cross"></span>
 				</a>';
 		}
 		wp_reset_query();	// Clearing query ($new_query) for correct work of other loops.

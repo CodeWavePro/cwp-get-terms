@@ -1,0 +1,110 @@
+/**
+ * Main colors.
+ */
+$brand: #58c800;
+$white: #f9f9f9;
+$text: #323232;
+$error: #ff3e3e;
+
+@mixin transition($time) {
+    transition: all ease-in-out $time;
+}
+
+// Terms & sorting types list wrappers.
+.terms-wrapper,
+.sorting-wrapper {
+    margin: 0 0 15px
+}
+
+// Sort by price wrapper.
+.price-sorting-wrapper {
+    margin: 0 0 30px
+}
+
+// Icons before terms/sort wrapper.
+.icon,
+.icon_sort {
+    color: $brand;
+    width: 16px;
+    text-align: center;
+    margin-right: 10px
+}
+
+.icon_sort {
+    margin: 0 5px 0 0
+}
+
+.apply-filters {
+    cursor: pointer;
+    color: #b5b5b5;
+    @include transition(300ms);
+
+    &:hover {
+        color: $brand
+    }
+}
+
+// Terms/sorting items list.
+.terms,
+.sorting,
+.price-sorting {
+    display: inline-block
+}
+
+// Term/sorting list item.
+.term,
+.sort {
+    display: inline-block;
+    margin-right: 15px;
+    color: #b5b5b5;
+    text-transform: lowercase;
+    @include transition(300ms);
+    cursor: pointer;
+
+    &:last-child {
+    	margin-right: 0
+    }
+
+    &:hover {
+    	color: $brand
+    }
+}
+
+// Text inputs for min & max prices.
+.price-sorting__input[type="text"] {
+    display: inline-block;
+    width: 60px;
+    border-color: #b5b5b5;
+    margin-right: 30px;
+    color: #b5b5b5;
+    text-align: center
+}
+
+// Active class.
+.sort_active {
+	color: $brand
+}
+
+@media (max-width : 767px) {
+    .icon {
+        vertical-align: top
+    }
+
+    .term,
+    .sort {
+        padding: 10px 0
+    }
+
+    .terms-wrapper,
+    .sorting-wrapper,
+    .price-sorting-wrapper {
+        display: grid;
+        grid-template-columns: 30px auto;
+        align-items: center
+    }
+
+    .price-sorting__input[type="text"] {
+        width: 50px;
+        margin-right: 20px
+    }
+}
